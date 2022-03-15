@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/model/task.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/ui/startup.dart';
+import 'package:todo/helpers/theme.dart';
 import 'package:todo/ui/TaskViewPage.dart';
 
 class TaskEditPage extends StatefulWidget {

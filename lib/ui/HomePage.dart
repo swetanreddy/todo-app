@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:todo/helpers/methods.dart';
+import 'package:intl/intl.dart';
 import 'package:todo/model/task.dart';
 import 'package:todo/ui/TaskViewPage.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/ui/filters.dart';
 import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,16 +22,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var radius = const Radius.circular(20);
 
+  CalendarController? _controller;
   var doneTasks = [];
 
-  final data = FirebaseFirestore.instance
-      .collection('assignedTasks')
-      .where('email', isEqualTo: '${FirebaseAuth.instance.currentUser!.email}')
-      .snapshots();
+  @override
+  void initState() {
+    super.initState();
+    _controller = CalendarController();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = TabController(length: 4, vsync: this);
+    TabController _tabController = TabController(length: 2, vsync: this);
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -45,26 +48,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children:  [
+                      children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 0,bottom: 0),
+                          padding: const EdgeInsets.only(top: 0, bottom: 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
                                 child: const Image(
-                                  height: 35,
-                                  width: 35,
-                                  image: AssetImage('assets/images/menu.png',),
-                                ),
+                                    height: 35,
+                                    width: 35,
+                                    image: AssetImage(
+                                      'assets/images/menu.png',
+                                    )),
                                 onTap: () {
-                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(
                                     builder: (context) => FilterLabels(),
                                   ));
                                 },
                               ),
-
-                              Text('Task Manager',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
+                              Text(
+                                'Task Manager',
+                                style: kHeadingFont.copyWith(
+                                    color: black, fontSize: 14),
+                              ),
                               NamedIcon(
                                 text: '',
                                 iconData: Icons.notifications_none_rounded,
@@ -74,12 +82,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        SizedBox(height: 25,),
-                        Text("Welcome Back!",
-                            style: kHeadingFont),
-                        SizedBox(height: 7),
-                        Text("Here's Update Today.",
-                            style: kCardTitleFont),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        Text("Welcome Back!", style: kHeadingFont),
+                        const SizedBox(height: 7),
+                        Text("Here's Update Today.", style: kCardTitleFont),
                       ],
                     ),
                   ),
@@ -93,37 +101,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       controller: _tabController,
                       // labelColor: Colors.black,
                       unselectedLabelColor: Colors.black,
-                      tabs:  [
+                      tabs: [
                         Tab(
-                            child: Text("To Do",
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w500),
-                            ),
+                          child: Text("Today",
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 10.5, fontWeight: FontWeight.w500)),
                         ),
                         Tab(
-                            child: Text("Ongoing",
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w500
-                                ),
-                            ),
-                        ),
-                        Tab(
-                            child: Text("Blocked",
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w500
-                                ),
-                            ),
-                        ),
-                        Tab(
-                            child: Text("Done",
-                                style: GoogleFonts.montserrat(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w500
-                                ),
-                            ),
+                          child: Text("Upcoming",
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 10.5, fontWeight: FontWeight.w500)),
                         ),
                       ],
                       indicator: ShapeDecoration(
@@ -135,16 +122,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   SizedBox(
                     width: width * 1,
                     height: 620,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _fetchNewStatusTasks(),
-                        _fetchInprogressStatusTasks(),
-                        _fetchBlockedStatusTasks(),
-                        // _fetchDoneStatusTasks()
-                        _fetchDoneTasks(_auth.currentUser?.email)
-                      ],
-                    ),
+                    child: TabBarView(controller: _tabController, children: [
+                      _tasksTodo(),
+                      //_fetchNewStatusTasks(),
+                      _fetchInprogressStatusTasks(),
+                    ]),
                   ),
                 ],
               ),
@@ -152,19 +134,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      // bottomNavigationBar: _buildBottomNavigationBar(),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: FloatingActionButton(
-      //   elevation: 0,
-      //   foregroundColor: Colors.white,
-      //   backgroundColor: Colors.black,
-      //   onPressed: () {
-      //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //       builder: (context) => const CreateTask(),
-      //     ));
-      //   },
-      //   child: const Icon(Icons.add, size: 30),
-      // ),
     );
   }
 
@@ -178,19 +147,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) =>
-                            TaskViewPage(task: taskItems[index]),
-                      ));
+                      // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      //   builder: (context) =>
+                      //       TaskViewPage(taskData: taskItems[index]),
+                      // ));
                     },
                     child: Container(
                       decoration: BoxDecoration(
                           //color: taskItems[index].tagColor,
                           color: white,
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.shade200,
-                            blurRadius: 5.0,
-                          ),],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade200,
+                              blurRadius: 5.0,
+                            ),
+                          ],
                           borderRadius: BorderRadius.circular(8)),
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -198,22 +169,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                "Task #${taskItems[index].taskNumber}",
-                                style: kCardHeaderFont
-                              ),
+                              Text("Task #${taskItems[index].taskNumber}",
+                                  style: kCardHeaderFont),
                               const Spacer(),
-                              Text(
-                                timeago.format(taskItems[index].datetime!),
-                                style:kCardHeaderFont
-                              ),
+                              Text(timeago.format(taskItems[index].datetime!),
+                                  style: kCardHeaderFont),
                             ],
                           ),
                           const SizedBox(height: 15),
-                          Text(
-                            "${taskItems[index].title}",
-                            style: kCardTitleFont
-                          ),
+                          Text("${taskItems[index].title}",
+                              style: kCardTitleFont),
                           const SizedBox(height: 5.0),
                           Row(
                             children: [
@@ -225,34 +190,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       horizontal: 4, vertical: 2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(color: primary),
+                                    border: Border.all(color: Colors.white),
+                                    color: primary,
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 3.5),
                                     child: Text(
                                       "${taskItems[index].tag}",
-                                      style: kSubTitleFont.copyWith(color: Colors.black,fontSize: 12),
+                                      style: kSubTitleFont.copyWith(
+                                          color: Colors.white, fontSize: 11),
                                     ),
                                   ),
                                 ),
                               ),
                               //const Spacer(),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4,horizontal: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 5),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 4, vertical: 2),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(19),
-                                    border: Border.all(color: primary),
+                                    //border: Border.all(color: Colors.white),
+                                    color: primary,
                                     //color: taskItems[index].tagColor,
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 3.5),
                                     child: Text(
-                                      "Priority ${taskItems[index].priority}",
-                                      style: kSubTitleFont.copyWith(color: Colors.black,fontSize: 12),
+                                      "Status: ${taskItems[index].status}",
+                                      style: kSubTitleFont.copyWith(
+                                          color: Colors.white, fontSize: 11),
                                     ),
                                   ),
                                 ),
@@ -277,7 +248,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                       Text(
                                           "Assigned by : ${taskItems[index].assignedBy}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
+                                          style: kHeadingFont.copyWith(
+                                              fontSize: 11)),
                                     ],
                                   ),
                                   const SizedBox(
@@ -294,7 +266,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                       Text(
                                           "${taskItems[index].startDate} - ${taskItems[index].endDate}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
+                                          style: kHeadingFont.copyWith(
+                                              fontSize: 11)),
                                     ],
                                   ),
                                 ],
@@ -312,498 +285,127 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             }),
       );
 
-  Widget _fetchDoneStatusTasks() => Padding(
-        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-        child: ListView.builder(
-            itemCount: taskItems.length,
-            itemBuilder: (context, index) {
-              if (taskItems[index].status == "Done") {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) =>
-                            TaskViewPage(task: taskItems[index]),
-                      ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: taskItems[index].tagColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Task #${taskItems[index].taskNumber}",
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const Spacer(),
-                              Text(
-                                timeago.format(taskItems[index].datetime!),
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5.0),
-                          Text(
-                            "${taskItems[index].title}",
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: Colors.white),
-                                    color: taskItems[index].tagColor,
-                                  ),
-                                  child: Text(
-                                    "${taskItems[index].tag}",
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(color: Colors.white),
-                                    color: taskItems[index].tagColor,
-                                  ),
-                                  child: Text(
-                                    "Status: ${taskItems[index].status}",
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text("Assigned by : ${taskItems[index].assignedBy}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.timer,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text("${taskItems[index].startDate} - ${taskItems[index].endDate}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox(height: 0.0);
-              }
-            }),
-      );
+  void _selectDay(DateTime day) {
+    setState(() {
+      print(day);
+    });
+  }
+
+  void onSelect(DateTime day, List<dynamic> b, List<dynamic> c) {
+    print(day);
+
+  }
 
   Widget _fetchInprogressStatusTasks() => Padding(
-        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-        child: ListView.builder(
-            itemCount: taskItems.length,
-            itemBuilder: (context, index) {
-              if (taskItems[index].status == "In Progress") {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) =>
-                            TaskViewPage(task: taskItems[index]),
-                      ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        //color: taskItems[index].tagColor,
-                          color: white,
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.shade200,
-                            blurRadius: 5.0,
-                          ),],
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                  "Task #${taskItems[index].taskNumber}",
-                                  style: kCardHeaderFont
-                              ),
-                              const Spacer(),
-                              Text(
-                                  timeago.format(taskItems[index].datetime!),
-                                  style:kCardHeaderFont
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          Text(
-                              "${taskItems[index].title}",
-                              style: kCardTitleFont
-                          ),
-                          const SizedBox(height: 5.0),
-                          Row(
-                            children: [
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(color: Colors.white),
-                                    color: primary,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
-                                    child: Text(
-                                      "${taskItems[index].tag}",
-                                      style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              //const Spacer(),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4,horizontal: 5),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(19),
-                                    //border: Border.all(color: Colors.white),
-                                    color: primary,
-                                    //color: taskItems[index].tagColor,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 3.5),
-                                    child: Text(
-                                      "Status: ${taskItems[index].status}",
-                                      style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 18.0),
-                          Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                          "Assigned by : ${taskItems[index].assignedBy}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.timer,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                          "${taskItems[index].startDate} - ${taskItems[index].endDate}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              } else {
-                return const SizedBox(height: 0.0);
-              }
-            }),
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10),
+        child: Column(
+          children: [
+            TableCalendar(
+              calendarController: _controller,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              availableCalendarFormats: const {
+                CalendarFormat.week: 'Week',
+              },
+              onDaySelected: onSelect,
+              initialCalendarFormat: CalendarFormat.week,
+              calendarStyle: CalendarStyle(
+                selectedColor: primary,
+                renderDaysOfWeek: true,
+                outsideDaysVisible: false,
+                outsideWeekendStyle:
+                    const TextStyle().copyWith(color: Colors.black),
+                outsideStyle:
+                    const TextStyle().copyWith(color: Colors.blueGrey[400]),
+                weekdayStyle: kHeadingFont.copyWith(color: greyHeading),
+                selectedStyle: kHeadingFont.copyWith(color: Colors.white),
+                todayStyle: const TextStyle().copyWith(color: Colors.white),
+                todayColor: Colors.grey,
+                weekendStyle: kHeadingFont.copyWith(color: greyHeading),
+                holidayStyle: TextStyle().copyWith(color: Colors.white),
+              ),
+              headerStyle: HeaderStyle(
+                leftChevronIcon: Icon(Icons.chevron_left, color: primary),
+                rightChevronIcon: Icon(Icons.chevron_right, color: primary),
+                titleTextStyle: kCardTitleFont.copyWith(fontSize: 13),
+                formatButtonTextStyle:
+                    const TextStyle().copyWith(color: white, fontSize: 15.0),
+                formatButtonDecoration: BoxDecoration(
+                  color: primary,
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: kHeadingFont.copyWith(color: black),
+                weekendStyle: kHeadingFont.copyWith(color: black),
+              ),
+            ),
+          ],
+        ),
       );
 
-  Widget _fetchBlockedStatusTasks() => Padding(
-        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-        child: ListView.builder(
-            itemCount: taskItems.length,
-            itemBuilder: (context, index) {
-              if (taskItems[index].status == "Blocked") {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) =>
-                            TaskViewPage(task: taskItems[index]),
-                      ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        //color: taskItems[index].tagColor,
-                          color: white,
-                          boxShadow: [BoxShadow(
-                            color: Colors.grey.shade200,
-                            blurRadius: 5.0,
-                          ),],
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                  "Task #${taskItems[index].taskNumber}",
-                                  style: kCardHeaderFont
-                              ),
-                              const Spacer(),
-                              Text(
-                                  timeago.format(taskItems[index].datetime!),
-                                  style:kCardHeaderFont
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          Text(
-                              "${taskItems[index].title}",
-                              style: kCardTitleFont
-                          ),
-                          const SizedBox(height: 5.0),
-                          Row(
-                            children: [
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(color: Colors.white),
-                                    color: primary,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
-                                    child: Text(
-                                      "${taskItems[index].tag}",
-                                      style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              //const Spacer(),
-                              Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 4,horizontal: 5),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(19),
-                                    //border: Border.all(color: Colors.white),
-                                    color: primary,
-                                    //color: taskItems[index].tagColor,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
-                                    child: Text(
-                                      "Status: ${taskItems[index].status}",
-                                      style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 18.0),
-                          Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                          "Assigned by : ${taskItems[index].assignedBy}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.timer,
-                                        size: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                          "${taskItems[index].startDate} - ${taskItems[index].endDate}",
-                                          style: kHeadingFont.copyWith(fontSize: 11)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+  late Query<Map<String, dynamic>> todoTasks = FirebaseFirestore.instance.collection('assignedTasks').where("Assigned to", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "TO DO");
+  Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
+        stream: todoTasks.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: Column(
+                children: const [
+                  Center(
+                    child: CircularProgressIndicator(),
                   ),
-                );
-              } else {
-                return const SizedBox(height: 0.0);
-              }
-            }),
-      );
-
-  Widget _fetchDoneTasks(email) => FutureBuilder(
-    future: DBQuery.instanace.getTasksBySignedInUser(_auth.currentUser?.email),
-    builder: (context, AsyncSnapshot snapshot) {
-      if (snapshot.connectionState == ConnectionState.done) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          child: ListView.builder(
-              itemCount: taskItems.length,
-              itemBuilder: (context, index) {
-                if (taskItems[index].status == "Done") {
+                  SizedBox(height: 50),
+                  Center(
+                    child: Text("Tasks Loading..."),
+                  )
+                ],
+              ),
+            );
+          } else {
+            return ListView.builder(
+                itemCount: snapshot.data?.docs.length,
+                itemBuilder: (context, index) {
+                  late QueryDocumentSnapshot<Object?>? taskData = snapshot.data?.docs[index];
+                  print("qwdqwdw ${taskData?.data()}");
+                  print("date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                  print("due date is ${taskData!.get('due data')}");
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) =>
-                              TaskViewPage(task: taskItems[index]),
-                        ));
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        //   builder: (context) => TaskViewPage(taskData: taskData.data(),),
+                        // ));
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          //color: taskItems[index].tagColor,
+                            //color: taskItems[index].tagColor,
                             color: white,
-                            boxShadow: [BoxShadow(
-                              color: Colors.grey.shade200,
-                              blurRadius: 5.0,
-                            ),],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade200,
+                                blurRadius: 5.0,
+                              ),
+                            ],
                             borderRadius: BorderRadius.circular(8)),
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                    "Task #${taskItems[index].taskNumber}",
-                                    style: kCardHeaderFont
-                                ),
-                                const Spacer(),
-                                Text(
-                                    timeago.format(taskItems[index].datetime!),
-                                    style:kCardHeaderFont
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
                             Text(
-                                "${taskItems[index].title}",
-                                style: kCardTitleFont
+                              "${taskData.get('Task Title')}",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
                             ),
-                            const SizedBox(height: 5.0),
+                            const SizedBox(height: 20.0),
                             Row(
                               children: [
                                 Padding(
                                   padding:
-                                  const EdgeInsets.symmetric(vertical: 4),
+                                      const EdgeInsets.symmetric(vertical: 4),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4, vertical: 2),
@@ -813,18 +415,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       color: primary,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 3.5),
                                       child: Text(
-                                        "${taskItems[index].tag}",
-                                        style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
+                                        "${taskData.get('department')}",
+                                        style: kSubTitleFont.copyWith(
+                                            color: Colors.white, fontSize: 11),
                                       ),
                                     ),
                                   ),
                                 ),
-                                //const Spacer(),
                                 Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 4,horizontal: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 5),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4, vertical: 2),
@@ -835,17 +438,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       //color: taskItems[index].tagColor,
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10.0, vertical: 3.5),
                                       child: Text(
-                                        "Status: ${taskItems[index].status}",
-                                        style: kSubTitleFont.copyWith(color: Colors.white,fontSize: 11),
+                                        "Status: ${taskData.get('status')}",
+                                        style: kSubTitleFont.copyWith(
+                                            color: Colors.white, fontSize: 11),
                                       ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 18.0),
+                            const SizedBox(height: 10.0),
                             Row(
                               children: [
                                 Column(
@@ -862,8 +467,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           width: 8,
                                         ),
                                         Text(
-                                            "Assigned by : ${taskItems[index].assignedBy}",
-                                            style: kHeadingFont.copyWith(fontSize: 11)),
+                                            "Assigned by : ${taskData.get('Assigned by(name)')}",
+                                            style: kHeadingFont.copyWith(
+                                                fontSize: 11)),
                                       ],
                                     ),
                                     const SizedBox(
@@ -879,8 +485,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           width: 8,
                                         ),
                                         Text(
-                                            "${taskItems[index].startDate} - ${taskItems[index].endDate}",
-                                            style: kHeadingFont.copyWith(fontSize: 11)),
+                                            "${taskData.get('created on')} - ${taskData.get('due data')}",
+                                            style: kHeadingFont.copyWith(
+                                                fontSize: 11)),
                                       ],
                                     ),
                                   ],
@@ -892,139 +499,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   );
-                } else {
-                  return const SizedBox(height: 0.0);
-                }
-              }),
-        );
-      }else{
-        return const Center(child: CircularProgressIndicator());
-      }
-    },
-  );
+                });
+          }
+        },
+      );
 
-  // late Query<Map<String, dynamic>> todoTasks = FirebaseFirestore.instance.collection('assignedTasks').where("Assigned to", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "TO DO");
-  // Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
-  //   stream: todoTasks.snapshots(),
-  //   builder: (context, snapshot) {
-  //     if (!snapshot.hasData) {
-  //       return Column(
-  //         children: const [
-  //           Center(
-  //             child: CircularProgressIndicator(),
-  //           ),
-  //           SizedBox(height: 50),
-  //           Center(
-  //             child: Text("Tasks Loading..."),
-  //           )
-  //         ],
-  //       );
-  //     } else {
-  //       return ListView.builder(
-  //           itemCount: snapshot.data?.docs.length,
-  //           itemBuilder: (context, index) {
-  //             final taskData = snapshot.data?.docs[index];
-  //             print("qwdqwdw ${taskData?.data()}");
-  //             return Padding(
-  //               padding: const EdgeInsets.symmetric(vertical: 8),
-  //               child: GestureDetector(
-  //                 onTap: () {
-  //                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-  //                     builder: (context) => TaskViewPage(task: taskData?.data()),
-  //                   ));
-  //                 },
-  //                 child: Container(
-  //                   decoration: BoxDecoration(
-  //                       color: taskItems[index].tagColor,
-  //                       borderRadius: BorderRadius.circular(8)),
-  //                   padding: const EdgeInsets.all(16),
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text("${taskData!.get('Task Title')}",
-  //                         style: const TextStyle(
-  //                           color: Colors.black,
-  //                           fontWeight: FontWeight.bold,
-  //                           fontSize: 20,
-  //                         ),
-  //                       ),
-  //                       const SizedBox(height: 20.0),
-  //                       Row(
-  //                         children: [
-  //                           Padding(
-  //                             padding:
-  //                             const EdgeInsets.symmetric(vertical: 4),
-  //                             child: Container(
-  //                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-  //                               decoration: BoxDecoration(
-  //                                 borderRadius: BorderRadius.circular(4),
-  //                                 border: Border.all(color: Colors.white),
-  //                                 color: taskItems[index].tagColor,
-  //                               ),
-  //                               child: Text("${taskData.get('department')}",
-  //                                 style: const TextStyle(color: Colors.white),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           const Spacer(),
-  //                           Padding(
-  //                             padding:
-  //                             const EdgeInsets.symmetric(vertical: 4),
-  //                             child: Container(
-  //                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-  //                               decoration: BoxDecoration(
-  //                                 borderRadius: BorderRadius.circular(4),
-  //                                 border: Border.all(color: Colors.white),
-  //                                 color: taskItems[index].tagColor,
-  //                               ),
-  //                               child: Text("Status: ${taskData.get('status')}",
-  //                                 style: const TextStyle(color: Colors.white),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                       const SizedBox(height: 10.0),
-  //                       Row(
-  //                         children: [
-  //                           Column(
-  //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                             mainAxisAlignment: MainAxisAlignment.end,
-  //                             children: [
-  //                               Row(
-  //                                 children: [
-  //                                   const Icon(Icons.calendar_today_outlined, size: 12),
-  //                                   const SizedBox(width: 8),
-  //                                   Text("Assigned by : ${taskData.get('Assigned by')}",
-  //                                     style: const TextStyle(
-  //                                         fontWeight: FontWeight.bold),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                               const SizedBox(height: 12),
-  //                               Row(
-  //                                 children: [
-  //                                   const Icon(Icons.timer, size: 12),
-  //                                   const SizedBox(width: 8),
-  //                                   Text("${taskData.get('created on')} - ${taskData.get('due data')}",
-  //                                     style: const TextStyle(
-  //                                         fontWeight: FontWeight.bold),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ),
-  //             );
-  //           });
-  //     }
-  //   },
-  // );
 }
 
 class NamedIcon extends StatelessWidget {
@@ -1047,20 +526,24 @@ class NamedIcon extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 30,
-        padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Icon(iconData,size: 27,),
+            Icon(
+              iconData,
+              size: 27,
+            ),
             Positioned(
               top: 0,
               right: 5,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.red),
                 //alignment: Alignment.topLeft,
                 //child: Text('$notificationCount',style: kHeadingFont.copyWith(fontSize: 10,color: ),),
-                child: Text(''),
+                child: const Text(''),
               ),
             )
           ],

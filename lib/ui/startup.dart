@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo/ui/CreateTask.dart';
 import 'package:todo/ui/HomePage.dart';
 import 'package:todo/ui/ProfilePage.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
 
 
 class startUpPage extends StatefulWidget {
@@ -18,7 +18,6 @@ class _startUpPageState extends State<startUpPage> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-
     ProfilePage(),
   ];
 

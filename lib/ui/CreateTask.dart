@@ -4,12 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/ui/HomePage.dart';
+import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/SelectMembers.dart';
 import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
 
 class CreateTask extends StatefulWidget {
   const CreateTask({Key? key}) : super(key: key);
@@ -82,14 +80,14 @@ class _CreateTaskState extends State<CreateTask> {
   Future<void> addUser() {
     return assignedTasks
         .add({
-          'Task Title': _taskTitle.text,
-          'Task Description': _taskDescription.text,
-          'created on': DateFormat("yyyy-MM-dd").format(DateTime.now()),
-          'due data': dateinput.text,
-          'Assigned by(email)': _auth.currentUser?.email,
-          'Assigned by(name)': _auth.currentUser?.displayName,
-          'Assigned to(name)': assignedToUserName,
-          'Assigned to(email)': assignedToUserName,
+          'task_title': _taskTitle.text,
+          'task_description': _taskDescription.text,
+          'created_on': DateFormat("yyyy-MM-dd").format(DateTime.now()),
+          'due_date': dateinput.text,
+          'Assigned_by(email)': _auth.currentUser?.email,
+          'Assigned_by(name)': _auth.currentUser?.displayName,
+          'Assigned_to(name)': assignedToUserName,
+          'Assigned_to(email)': assignedToUserName,
           'department': bucketValue,
           'status': statusValue,
         })

@@ -1,16 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:todo/auth/LoginPage.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/ui/HomePage.dart';
 import 'package:todo/ui/Notifications.dart';
-import 'package:todo/ui/SelectMembers.dart';
-import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -20,6 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  final User? currentUser = FirebaseAuth.instance.currentUser;
   String txt = '';
   @override
   Widget build(BuildContext context) {
@@ -60,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 )),
                 Center(
                     child: Text(
-                  "ahnaf123@gmail.com",
+                  "${currentUser?.email}",
                   style: kSubTitleFont.copyWith(fontSize: 11),
                 )),
                 const SizedBox(

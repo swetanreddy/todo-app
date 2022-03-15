@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/model/task.dart';
-import 'package:todo/startup.dart';
+import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/CreateTask.dart';
-import 'package:todo/ui/HomePage.dart';
-import 'package:todo/ui/TaskEditPage.dart';
-import 'package:todo/ui/TaskHomePage.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
 
 class SelectMember extends StatefulWidget {
   const SelectMember({Key? key}) : super(key: key);

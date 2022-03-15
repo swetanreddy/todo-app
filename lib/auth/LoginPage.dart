@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:todo/helpers/constants.dart';
 import 'package:todo/helpers/methods.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/theme.dart';
-import 'package:todo/ui/HomePage.dart';
-import 'package:todo/ui/TaskHomePage.dart';
+import 'package:todo/ui/startup.dart';
+import 'package:todo/helpers/theme.dart';
+import 'package:todo/ui/firebase_help.dart';
 
 import '../ui/ButtonClass.dart';
 
@@ -18,12 +19,37 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final User? currentUser = FirebaseAuth.instance.currentUser;
   bool isLoading = false;
   bool _passwordVisible = false;
+  String? localFcmToken = "";
+  String? loggedInFcmToken = "";
+
+  var userDetails = [];
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+          setState(() {
+            localFcmToken = token;
+            print("Local fcm token is $token");
+          });
+        }
+    );
+  }
+
+  void getLoggedInUserDetails() async {
+    var x = await DBQuery.instanace.getLoggedInUserDetails(currentUser?.uid);
+    print("ewfwfe ${x.data()}");
+  }
+
+
   @override
   void initState() {
     _passwordVisible = false;
+    getToken();
+    getLoggedInUserDetails();
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -114,12 +140,19 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             isLoading = true;
           });
-
           logIn(_email.text, _password.text).then((user) {
-            if (user != null) {
+            if (user != null && localFcmToken != null) {
               print("Login Sucessfull");
               setState(() {
                 isLoading = false;
+              });
+              var currentUser = FirebaseAuth.instance.currentUser;
+
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser?.uid)
+                  .update({"user_fcmtoken" : localFcmToken}).then((_) {
+                print("success!");
               });
               Navigator.pushReplacement((context),
                   MaterialPageRoute(builder: (context) => startUpPage()));
@@ -153,29 +186,25 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget field(
-      Size size, String hintText, IconData icon, TextEditingController cont) {
+  Widget field(Size size, String hintText, IconData icon, TextEditingController cont) {
     return Container(
-      height: 60,
-      //width: size.width / 1.1,
-      child: TextField(
-        style: kTextFont,
-        controller: cont,
-        decoration: InputDecoration(
-        suffixIcon: CircleIconButton(
-        icon: icon,
-        onPressed: () {
-      this.setState(() {
-        cont.clear();
-      });
-    },),
-          labelText: hintText,
-          labelStyle:kHeadingFont,
-          // border: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(10),
-          // ),
+        height: 60,
+        child: TextField(
+          style: kTextFont,
+          controller: cont,
+          decoration: InputDecoration(
+          suffixIcon: CircleIconButton(
+          icon: icon,
+          onPressed: () {
+            setState(() {
+              cont.clear();
+            });
+            },
+          ),
+            labelText: hintText,
+            labelStyle:kHeadingFont,
+          ),
         ),
-      ),
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:todo/auth/LoginPage.dart';
-import 'package:todo/startup.dart';
+import 'package:todo/ui/startup.dart';
 
 class Authenticate extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;

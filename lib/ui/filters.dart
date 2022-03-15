@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/ui/startup.dart';
+import 'package:todo/helpers/theme.dart';
 import 'package:todo/ui/HomePage.dart';
 
 class FilterLabels extends StatefulWidget {
@@ -25,9 +25,7 @@ class _FilterLabelsState extends State<FilterLabels> {
                         child: const Image(
                           height: 40,
                           width: 40,
-                          image: const AssetImage(
-                            'assets/images/backarrow.png',
-                          ),
+                          image: AssetImage('assets/images/backarrow.png'),
                         ),
                         onTap: () {
                           Navigator.of(context).pushReplacement(
@@ -59,7 +57,7 @@ class _FilterLabelsState extends State<FilterLabels> {
                   thickness: 2,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.grey.shade300,
@@ -80,7 +78,7 @@ class _FilterLabelsState extends State<FilterLabels> {
                     )
                   ),
                 ),
-                SizedBox(height: 40,),
+                const SizedBox(height: 40,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -89,14 +87,14 @@ class _FilterLabelsState extends State<FilterLabels> {
                           color: black, fontSize: 18, letterSpacing: 0.8),),
                       alignment: Alignment.centerLeft,
                     ),
-                    Align(
+                    const Align(
                       child: Icon(Icons.add),
                       alignment: Alignment.centerLeft,
                     ),
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Container(
                       decoration: BoxDecoration(
                           color: Colors.grey.shade300,
@@ -104,7 +102,7 @@ class _FilterLabelsState extends State<FilterLabels> {
                       ),
                       alignment: Alignment.centerLeft,
                       width: double.infinity,
-                      height: 180,
+                      height: 250,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: ListView(
@@ -112,6 +110,7 @@ class _FilterLabelsState extends State<FilterLabels> {
                             ListTile( title: Text("Basic"), leading: Icon(Icons.label), trailing: Text("10"),),
                             ListTile( title: Text("Important"), leading: Icon(Icons.label), trailing: Text("4"),),
                             ListTile( title: Text("Urgent"), leading: Icon(Icons.label), trailing: Text("4"),),
+                            ListTile( title: Text("Done"), leading: Icon(Icons.label), trailing: Text("2"),),
                           ],
                         ),
                       )

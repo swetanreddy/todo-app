@@ -3,6 +3,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DBQuery {
   static DBQuery get instanace => DBQuery();
 
+  getLoggedInUserDetails(uid) async {
+    QuerySnapshot userData = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get();
+
+    if (!userData.docs.isEmpty) {
+      return userData.docs.toList();
+    } else {
+      return null;
+    }
+  }
+
   getUsersByDept(deptName) async {
     QuerySnapshot usersList = await FirebaseFirestore.instance
         .collection('users')

@@ -1,38 +1,29 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:todo/model/task.dart';
-import 'package:todo/startup.dart';
-import 'package:todo/ui/HomePage.dart';
+import 'package:todo/model/taskData.dart';
+import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/TaskEditPage.dart';
-import 'package:todo/ui/TaskHomePage.dart';
-import 'package:todo/theme.dart';
+import 'package:todo/helpers/theme.dart';
 
 class TaskViewPage extends StatefulWidget {
-  Task? task;
+  TaskData? taskData;
 
-  TaskViewPage({Key? key, this.task}) : super(key: key);
+  TaskViewPage({Key? key, this.taskData}) : super(key: key);
 
   @override
   _TaskViewPageState createState() => _TaskViewPageState();
 }
 
 class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderStateMixin {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _commentController = TextEditingController();
   late TabController _tabController = TabController(length: 2, vsync: this);
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    // TabController _tabController = TabController(length: 3, vsync: this);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Column(
           children: [
@@ -42,7 +33,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    child: Image(
+                    child: const Image(
                       height: 35,
                       width: 35,
                       image: AssetImage('assets/images/backarrow.png',),
@@ -54,7 +45,8 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                   IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const TaskEditPage()));
+                      print(widget.taskData);
+                      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const TaskEditPage()));
                     },
                   ),
                 ],
@@ -69,101 +61,70 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                       Padding(
                         padding: const EdgeInsets.only(top: 16,bottom: 5),
                         child: Text(
-                          "${widget.task?.title}",
+                          "Task Title",
                           style: kTitleFont.copyWith(fontSize: 22)
                         ),
                       ),
                       Row(
                         children: [
                           Text(
-                            "${widget.task?.tag}",
+                            "Tag",
                             style: kHeadingFont.copyWith(fontSize: 12),
                           ),
-                          SizedBox(width: 20,),
+                          const SizedBox(width: 20,),
                           Text(
-                            "Priority: ${widget.task?.priority}",
+                            "Priority: Priority",
                             style: kHeadingFont.copyWith(fontSize: 12),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15,),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.symmetric(vertical: 4),
-                      //       child: Container(
-                      //         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                      //         decoration: BoxDecoration(
-                      //           borderRadius: BorderRadius.circular(15),
-                      //           color: primary,
-                      //         ),
-                      //         child: Padding(
-                      //           padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 3.5),
-                      //           child: Text(
-                      //             "${widget.task?.tag}",
-                      //             style: const TextStyle(color: Colors.white),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Text(
-                      //       "${timeago.format(widget.task!.datetime!)}",
-                      //       style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                      //     ),
-                      //   ],
-                      // ),
-                      SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(radius: 20,child: Icon(Icons.person,color: white,size: 18,),),
-                                  Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left:8.0,top: 1),
-                                        child:  Text("Assigned To",style: kHeadingFont.copyWith(fontSize: 11),),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left:8.0,top: 1),
-                                        child: Text("Swetan",style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
-                                    ],
-                                  )
-
-
-                                ],
-                              )),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(radius: 20,child: Icon(Icons.person,color: white,size: 18,),),
+                                Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:8.0,top: 1),
+                                      child:  Text("Assigned To",style: kHeadingFont.copyWith(fontSize: 11),),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:8.0,top: 1),
+                                      child: Text("Swetan",style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                           Expanded(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(radius: 20,child: Icon(Icons.calendar_today_rounded,color: white,size: 18,),),
-                                  Column(crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left:8.0,top: 1),
-                                        child:  Text("Due date",style: kHeadingFont.copyWith(fontSize: 11),),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left:8.0,top: 1),
-                                        child: Text("March 2",style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
-                                    ],
-                                  )
-
-
-                                ],
-                              )),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(radius: 20,child: Icon(Icons.calendar_today_rounded,color: white,size: 18,),),
+                                Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:8.0,top: 1),
+                                      child:  Text("Due date",style: kHeadingFont.copyWith(fontSize: 11),),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:8.0,top: 1),
+                                      child: Text("March 2",style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 30,),
+                      const SizedBox(height: 30,),
                       Text('Description',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
                           "Of course, deeply understanding your users and their needs is the foundation"
                               " of any food product. But that also means understanding all types of users"
@@ -181,9 +142,9 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                           child: TabBar(
                             controller: _tabController,
                             indicatorColor: Colors.black,
-                            labelStyle: TextStyle(fontSize: 14.0, color: Colors.black),
-                            unselectedLabelStyle: TextStyle(fontSize: 14.0, color: Colors.black),
-                            tabs: [
+                            labelStyle: const TextStyle(fontSize: 14.0, color: Colors.black),
+                            unselectedLabelStyle: const TextStyle(fontSize: 14.0, color: Colors.black),
+                            tabs: const [
                               Tab(child: Text("Comments", style: TextStyle(color: Colors.black),),),
                               Tab(child: Text("Timeline", style: TextStyle(color: Colors.black),),)
                             ],
@@ -199,67 +160,12 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                           ]
                         ),
                       ),
-                      // Text(
-                      //   "Comments",
-                      //   style: kHeadingFont.copyWith(color: black,fontSize: 14)
-                      // ),
-                      // const SizedBox(
-                      //   height: 58,
-                      // ),
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   child: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     children: [
-                      //       Icon(
-                      //         Icons.chat,
-                      //         size: 32,
-                      //         color: Colors.grey[300],
-                      //       ),
-                      //       const SizedBox(
-                      //         height: 8,
-                      //       ),
-                      //     Text(
-                      //         "Leave the first comment",
-                      //         style: kHeadingFont.copyWith(color: Colors.grey,fontSize: 13),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // )
                     ],
                   ),
                 ),
-                flex: 20),
-            // Expanded(
-            //     child: PhysicalModel(
-            //       color: Colors.grey,
-            //       elevation: 2,
-            //       child: Container(
-            //         color: Colors.grey[200],
-            //         padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-            //         child: Row(
-            //           children: [
-            //             Expanded(
-            //                 child: TextField(
-            //                   controller: _textEditingController,
-            //                   decoration: const InputDecoration(
-            //                       border: InputBorder.none,
-            //                       hintText: "Add a comment...",
-            //                       hintStyle: TextStyle(color: Colors.black54)),
-            //                 )),
-            //             IconButton(
-            //                 onPressed: () {
-            //                   if (_textEditingController.text.length > 0) {
-            //                     print(_textEditingController.text);
-            //                   }
-            //                 },
-            //                 icon: const Icon(Icons.send)),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //     flex: 2),
-            const SizedBox(height: 15),
+              flex: 20,
+            ),
+            const Divider(thickness: 1),
             Padding(
               padding: const EdgeInsets.only(left: 22,right: 22, bottom: 8.0),
               child: Container(
@@ -288,38 +194,58 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
   }
 
   Widget comments() => SingleChildScrollView(
-    child: Container(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+    child: Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Container(
+        height: 340,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  "Comments",
-                  style: kHeadingFont.copyWith(color: black,fontSize: 14)
-              ),
-            ),
-            const SizedBox(
-              height: 58,
+            Text("Comments",
+                style: kHeadingFont.copyWith(color: black,fontSize: 14)
             ),
             SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.chat,
+                      size: 32,
+                      color: Colors.grey[300],
+                    ),
+                    Text(
+                      "Leave the first comment",
+                      style: kHeadingFont.copyWith(color: Colors.grey,fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[200],
+              ),
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: Row(
                 children: [
-                  Icon(
-                    Icons.chat,
-                    size: 32,
-                    color: Colors.grey[300],
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    "Leave the first comment",
-                    style: kHeadingFont.copyWith(color: Colors.grey,fontSize: 13),
-                  ),
+                  Expanded(
+                      child: TextField(
+                        maxLines: 1,
+                        controller: _commentController,
+                        decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Add a comment...",
+                            hintStyle: TextStyle(color: Colors.black54)),
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        if (_commentController.text.isNotEmpty) {
+                          print(_commentController.text);
+                        }
+                      },
+                      icon: const Icon(Icons.send)),
                 ],
               ),
             ),
@@ -329,10 +255,9 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
     ),
   );
 
-
   Widget timeline() => SingleChildScrollView(
-    child: Container(
-      height: 300,
+    child: SizedBox(
+      height: 350,
       child: Center(
         child: ListView(
           children: [
@@ -402,12 +327,14 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                 color: Colors.black,
               ),
             ),
-          ]
+          ],
         ),
       ),
     ),
   );
 }
+
+
 class _RightChild extends StatelessWidget {
   const _RightChild({
     Key? key,
