@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DBQuery {
-  static DBQuery get instanace => DBQuery();
+class DbQuery {
+  static DbQuery get instanace => DbQuery();
 
   getLoggedInUserDetails(uid) async {
     QuerySnapshot userData = await FirebaseFirestore.instance
@@ -29,6 +29,19 @@ class DBQuery {
     }
   }
 
+  getEmployeesByDept(cName, deptName) {
+    print('sel dept ${deptName}');
+    if (deptName == "All") {
+      return FirebaseFirestore.instance
+          .collection('users')
+          // .where("department", arrayContainsAny: [deptName.toString().toLowerCase()])
+          .snapshots();
+    } else {
+      return FirebaseFirestore.instance.collection('users').where("department",
+          arrayContainsAny: [deptName.toString().toLowerCase()]).snapshots();
+    }
+  }
+
   getTasksBySignedInUser(SignedInUserEmail) async {
     QuerySnapshot userTaskList = await FirebaseFirestore.instance
         .collection('assignedTasks')
@@ -37,7 +50,6 @@ class DBQuery {
 
     if (!userTaskList.docs.isEmpty) {
       return userTaskList.docs.toList();
-
     } else {
       return null;
     }

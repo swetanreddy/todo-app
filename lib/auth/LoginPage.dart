@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo/helpers/methods.dart';
 import 'package:todo/ui/startup.dart';
 import 'package:todo/helpers/theme.dart';
@@ -29,19 +30,17 @@ class _LoginPageState extends State<LoginPage> {
 
   void getToken() async {
     await FirebaseMessaging.instance.getToken().then((token) {
-          setState(() {
-            localFcmToken = token;
-            print("Local fcm token is $token");
-          });
-        }
-    );
+      setState(() {
+        localFcmToken = token;
+        print("Local fcm token is $token");
+      });
+    });
   }
 
   void getLoggedInUserDetails() async {
-    var x = await DBQuery.instanace.getLoggedInUserDetails(currentUser?.uid);
+    var x = await DbQuery.instanace.getLoggedInUserDetails(currentUser?.uid);
     print("ewfwfe ${x.data()}");
   }
-
 
   @override
   void initState() {
@@ -66,19 +65,21 @@ class _LoginPageState extends State<LoginPage> {
             )
           : SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.only(left: 40.0, right: 40.0,top: 15),
+                padding:
+                    const EdgeInsets.only(left: 40.0, right: 40.0, top: 15),
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 43.0,bottom: 81),
+                      padding: const EdgeInsets.only(top: 43.0, bottom: 81),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text('REDEFINE ERP',style: TextStyle(
-                            color: greyHeading,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                          ))
+                          Text('REDEFINE ERP',
+                              style: TextStyle(
+                                color: greyHeading,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ))
                         ],
                       ),
                     ),
@@ -87,20 +88,14 @@ class _LoginPageState extends State<LoginPage> {
                     // ),
                     Container(
                       width: size.width / 1.1,
-                      child: Text(
-                        "Sign In",
-                        style: kTitleFont
-                      ),
+                      child: Text("Sign In", style: kTitleFont),
                     ),
                     SizedBox(
                       height: 8,
                     ),
                     Container(
                       width: size.width / 1.1,
-                      child: Text(
-                        "Sign In to continue",
-                        style: kSubTitleFont
-                      ),
+                      child: Text("Sign In to continue", style: kSubTitleFont),
                     ),
                     SizedBox(
                       height: 35,
@@ -110,7 +105,8 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         width: size.width,
                         alignment: Alignment.center,
-                        child: field(size, "YOUR EMAIL", Icons.close_rounded, _email),
+                        child: field(
+                            size, "YOUR EMAIL", Icons.close_rounded, _email),
                       ),
                     ),
                     Padding(
@@ -119,7 +115,10 @@ class _LoginPageState extends State<LoginPage> {
                         width: size.width,
                         alignment: Alignment.center,
                         child: passwordfield(
-                            size, "your password".toUpperCase(), Icons.close_rounded, _password),
+                            size,
+                            "your password".toUpperCase(),
+                            Icons.close_rounded,
+                            _password),
                       ),
                     ),
                     SizedBox(
@@ -151,12 +150,11 @@ class _LoginPageState extends State<LoginPage> {
               FirebaseFirestore.instance
                   .collection('users')
                   .doc(currentUser?.uid)
-                  .update({"user_fcmtoken" : localFcmToken}).then((_) {
+                  .update({"user_fcmtoken": localFcmToken}).then((_) {
                 print("success!");
               });
               Navigator.pushReplacement((context),
                   MaterialPageRoute(builder: (context) => startUpPage()));
-
             } else {
               print("Login Failed");
               setState(() {
@@ -186,25 +184,29 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget field(Size size, String hintText, IconData icon, TextEditingController cont) {
+  Widget field(
+      Size size, String hintText, IconData icon, TextEditingController cont) {
     return Container(
-        height: 60,
-        child: TextField(
-          style: kTextFont,
-          controller: cont,
-          decoration: InputDecoration(
+      height: 60,
+      child: TextFormField(
+        style: kTextFont,
+        controller: cont,
+        inputFormatters: [
+          FilteringTextInputFormatter.deny(new RegExp(r"\s\b|\b\s"))
+        ],
+        decoration: InputDecoration(
           suffixIcon: CircleIconButton(
-          icon: icon,
-          onPressed: () {
-            setState(() {
-              cont.clear();
-            });
+            icon: icon,
+            onPressed: () {
+              setState(() {
+                cont.clear();
+              });
             },
           ),
-            labelText: hintText,
-            labelStyle:kHeadingFont,
-          ),
+          labelText: hintText,
+          labelStyle: kHeadingFont,
         ),
+      ),
     );
   }
 
@@ -221,9 +223,7 @@ class _LoginPageState extends State<LoginPage> {
           suffixIcon: IconButton(
             icon: Icon(
               // Based on passwordVisible state choose the icon
-              _passwordVisible
-                  ? Icons.visibility
-                  : Icons.visibility_off,
+              _passwordVisible ? Icons.visibility : Icons.visibility_off,
               color: Theme.of(context).primaryColorDark,
               size: 20,
             ),
@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
           //     });
           //   },),
           labelText: hintText,
-          labelStyle:kHeadingFont,
+          labelStyle: kHeadingFont,
         ),
       ),
     );

@@ -696,8 +696,8 @@ class _CreateTaskState extends State<CreateTask> {
           value: bucketValue,
           onChanged: (String? newValue) async {
             //call firebase function to get users where department == 'newValue'
-            var x = await DBQuery.instanace.getUsersByDept(newValue);
-            var y = await DBQuery.instanace
+            var x = await DbQuery.instanace.getUsersByDept(newValue);
+            var y = await DbQuery.instanace
                 .getTasksBySignedInUser(_auth.currentUser?.email);
             print(y[0].data());
             print(newValue);

@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Text(
                                 'Task Manager',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 14),
+                                    color: black, fontSize: 22),
                               ),
                               NamedIcon(
                                 text: '',
@@ -105,12 +105,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Tab(
                           child: Text("Today",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 10.5, fontWeight: FontWeight.w500)),
+                                  fontSize: 13.5, fontWeight: FontWeight.w500)),
                         ),
                         Tab(
                           child: Text("Upcoming",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 10.5, fontWeight: FontWeight.w500)),
+                                  fontSize: 13.5, fontWeight: FontWeight.w500)),
                         ),
                       ],
                       indicator: ShapeDecoration(
@@ -293,7 +293,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void onSelect(DateTime day, List<dynamic> b, List<dynamic> c) {
     print(day);
-
   }
 
   Widget _fetchInprogressStatusTasks() => Padding(
@@ -343,9 +342,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
-  late Query<Map<String, dynamic>> todoTasks = FirebaseFirestore.instance.collection('assignedTasks').where("Assigned to", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "TO DO");
+ var todoTasks =
+      FirebaseFirestore.instance.collection('spark_assignedTasks');
+  // .where("to_uid", isNotEqualTo: _auth.currentUser?.email)
+  // .where("status", isEqualTo: "");
   Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
-        stream: todoTasks.snapshots(),
+        stream: FirebaseFirestore.instance.collection('spark_assignedTasks').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -362,13 +364,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             );
           } else {
+            print('no of todo is ${snapshot.data?.docs.length}');
             return ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
-                  late QueryDocumentSnapshot<Object?>? taskData = snapshot.data?.docs[index];
+                  late QueryDocumentSnapshot<Object?>? taskData =
+                      snapshot.data?.docs[index];
                   print("qwdqwdw ${taskData?.data()}");
-                  print("date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                  print("due date is ${taskData!.get('due data')}");
+                  // print(
+                  //     "date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                  // print("due date is ${taskData!.get('due data')}");
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: GestureDetector(
@@ -393,7 +398,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${taskData.get('Task Title')}",
+                              "${taskData!['task_title']}",
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -418,7 +423,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10.0, vertical: 3.5),
                                       child: Text(
-                                        "${taskData.get('department')}",
+                                        "${taskData.get('dept')}",
                                         style: kSubTitleFont.copyWith(
                                             color: Colors.white, fontSize: 11),
                                       ),
@@ -467,7 +472,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           width: 8,
                                         ),
                                         Text(
-                                            "Assigned by : ${taskData.get('Assigned by(name)')}",
+                                            "Assigned by : ${taskData.get('by_name')}",
                                             style: kHeadingFont.copyWith(
                                                 fontSize: 11)),
                                       ],
@@ -485,7 +490,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           width: 8,
                                         ),
                                         Text(
-                                            "${taskData.get('created on')} - ${taskData.get('due data')}",
+                                            "${taskData.get('created_on')} - ${taskData.get('due_date')}",
                                             style: kHeadingFont.copyWith(
                                                 fontSize: 11)),
                                       ],
@@ -503,7 +508,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           }
         },
       );
-
 }
 
 class NamedIcon extends StatelessWidget {

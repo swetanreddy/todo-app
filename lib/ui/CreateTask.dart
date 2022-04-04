@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/SelectMembers.dart';
@@ -25,14 +26,26 @@ class _CreateTaskState extends State<CreateTask> {
   String? priorityValue;
   String? assignedToUserName;
   String? assignedToUserEmail;
+  String viewPage = 'createHome';
+  String assignedToName = '';
+  String assignedToUid = '';
+  String assignedToDept = '';
+  String assignedToEmail = '';
+
+  late DateTime selectedDateTime = DateTime.now();
+  bool pressed = false;
 
   int _taskTypeIndex = 0;
-  List<String> _taskTypeItem = ["Basic", "Urgent", "Important", ];
+  List<String> _taskTypeItem = [
+    "Basic",
+    "Urgent",
+    "Important",
+  ];
   String _taskType = "Basic";
 
-  final TextEditingController _taskTitle = TextEditingController();
-  final TextEditingController _taskDescription = TextEditingController();
-  final TextEditingController dateinput = TextEditingController();
+  TextEditingController _taskTitle = TextEditingController();
+  TextEditingController _taskDescription = TextEditingController();
+  TextEditingController dateinput = TextEditingController();
 
   bool showUsers = false;
 
@@ -75,26 +88,27 @@ class _CreateTaskState extends State<CreateTask> {
   }
 
   CollectionReference assignedTasks =
-      FirebaseFirestore.instance.collection('assignedTasks');
+      FirebaseFirestore.instance.collection('spark_assignedTasks');
 
   Future<void> addUser() {
     return assignedTasks
         .add({
           'task_title': _taskTitle.text,
-          'task_description': _taskDescription.text,
-          'created_on': DateFormat("yyyy-MM-dd").format(DateTime.now()),
-          'due_date': dateinput.text,
-          'Assigned_by(email)': _auth.currentUser?.email,
-          'Assigned_by(name)': _auth.currentUser?.displayName,
-          'Assigned_to(name)': assignedToUserName,
-          'Assigned_to(email)': assignedToUserName,
-          'department': bucketValue,
+          'task_desc': _taskDescription.text,
+          'created_on': DateTime.now().millisecondsSinceEpoch,
+          'due_date': selectedDateTime.microsecondsSinceEpoch,
+          'by_email': _auth.currentUser?.email,
+          'by_name': _auth.currentUser?.displayName,
+          'by_uid': _auth.currentUser?.uid,
+          'to_name': assignedToName,
+          'to_uid': assignedToUid,
+          'to_email': assignedToEmail,
+          'dept': assignedToDept,
           'status': statusValue,
         })
-        .then((value) => print("Task Created"))
+        .then((value) => print("Task Created ${value}"))
         .catchError((error) => print("Failed to create task: $error"));
   }
-
 
   String? fileName;
   String? path;
@@ -128,315 +142,110 @@ class _CreateTaskState extends State<CreateTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   foregroundColor: Colors.black,
-      //   iconTheme: IconTheme.of(context).copyWith(color: Colors.black),
-      //   backgroundColor: Colors.white,
-      //   centerTitle: true,
-      //   leading: GestureDetector(
-      //     child: Icon(Icons.arrow_back_rounded),
-      //     onTap: () {
-      //       Navigator.of(context).pushReplacement(
-      //         MaterialPageRoute(builder: (context) => startUpPgae()),
-      //       );
-      //     },
-      //   ),
-      //   title: const Text(
-      //     "Create New Task",
-      //     style: TextStyle(color: Colors.black, fontSize: 18),
-      //   ),
-      // ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                          child: const Image(
-                            height: 20,
-                            width: 20,
-                            image: const AssetImage(
-                              'assets/images/backarrow.png',
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (_) => const startUpPage()));
-                          }),
-                      Text('CREATE TASK',
-                          style: kHeadingFont.copyWith(
-                              color: black, fontSize: 18, letterSpacing: 0.8)),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(
-                  thickness: 2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top:5.0),
-                  child: Text(
-                    'Task Title',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 18),
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: primary,
-                            radius: 20,
-                            child: Icon(
-                              Icons.add_task_outlined,
-                              color: white,
-                              size: 18,
-                            ),
-                          ),
-                          VerticalDivider(
-                            color: Colors.grey.shade200,
-                            thickness: 1,
-                          ),
-                          Container(
-                            width: 250,
-                            child: TextFormField(
-                              cursorColor: Colors.grey.shade200,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  contentPadding: const EdgeInsets.only(
-                                      left: 8, bottom: 11, top: 11, right: 15),
-                                  hintText: "Task Title",
-                                  hintStyle:
-                                      TextStyle(color: Colors.grey.shade300)),
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Add Team Member',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 18),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const SelectMember()));
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: primary,
-                        radius: 20,
-                        child: Icon(
-                          Icons.add,
-                          color: white,
-                        ),
-                      )),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Priority',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 18),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _taskTypeIndex = 0;
-                            _taskType = _taskTypeItem[_taskTypeIndex];
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: _taskTypeIndex == 0 ? primary : Colors.white,
-                              borderRadius: BorderRadius.circular(32),
-                              border: Border.all(color: primary)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              "Basic",
-                              style: TextStyle(
-                                color: _taskTypeIndex == 0 ? Colors.white : Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _taskTypeIndex = 1;
-                            _taskType = _taskTypeItem[_taskTypeIndex];
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: _taskTypeIndex == 1 ? primary : Colors.white,
-                              borderRadius: BorderRadius.circular(32),
-                              border: Border.all(color: primary)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              "Urgent",
-                              style: TextStyle(
-                                color: _taskTypeIndex == 1 ? Colors.white : Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _taskTypeIndex = 2;
-                            _taskType = _taskTypeItem[_taskTypeIndex];
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: _taskTypeIndex == 2 ? primary : Colors.white,
-                              borderRadius: BorderRadius.circular(32),
-                              border: Border.all(color: primary)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                          child: Center(
-                            child: Text(
-                              "Important",
-                              style: TextStyle(
-                                color: _taskTypeIndex == 2 ? Colors.white : Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
+        // appBar: AppBar(
+        //   foregroundColor: Colors.black,
+        //   iconTheme: IconTheme.of(context).copyWith(color: Colors.black),
+        //   backgroundColor: Colors.white,
+        //   centerTitle: true,
+        //   leading: GestureDetector(
+        //     child: Icon(Icons.arrow_back_rounded),
+        //     onTap: () {
+        //       Navigator.of(context).pushReplacement(
+        //         MaterialPageRoute(builder: (context) => startUpPgae()),
+        //       );
+        //     },
+        //   ),
+        //   title: const Text(
+        //     "Create New Task",
+        //     style: TextStyle(color: Colors.black, fontSize: 18),
+        //   ),
+        // ),
+        body: viewPage == 'createHome'
+            ? SingleChildScrollView(
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 10),
                           child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: primary,
-                            radius: 20,
-                            child: Icon(
-                              Icons.priority_high,
-                              color: white,
-                              size: 20,
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, top: 1),
-                                child: Text(
-                                  "Priority",
-                                  style: kHeadingFont.copyWith(fontSize: 14),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5, right: 0),
-                                child: Container(
-                                  height: 26,
-                                  width: 100,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
-                                    child: DropdownButton(
-                                      value: priorityValue,
-                                      icon: const Icon(Icons.keyboard_arrow_down),
-                                      items: priorityItems,
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          priorityValue = newValue!;
-                                        });
-                                      },
+                              GestureDetector(
+                                  child: const Image(
+                                    height: 20,
+                                    width: 20,
+                                    image: const AssetImage(
+                                      'assets/images/backarrow.png',
                                     ),
                                   ),
+                                  onTap: () {
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const startUpPage()));
+                                  }),
+                              Text('CREATE TASK',
+                                  style: kHeadingFont.copyWith(
+                                      color: black,
+                                      fontSize: 18,
+                                      letterSpacing: 0.8)),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
                                 ),
+                                onPressed: () {},
                               ),
                             ],
-                          )
-                        ],
-                      )),
-                      Expanded(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: primary,
-                            radius: 20,
-                            child: Icon(
-                              Icons.calendar_today_rounded,
-                              color: white,
-                              size: 18,
-                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, top: 1),
-                                child: Text(
-                                  "Due date",
-                                  style: kHeadingFont.copyWith(fontSize: 14),
-                                ),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(left: 0, top: 0),
-                                  child: Container(
-                                    height: 30,
-                                    width: 100,
+                        ),
+                        const Divider(
+                          thickness: 2,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 5.0),
+                          child: Text(
+                            'Task Title',
+                            style: kHeadingFont.copyWith(
+                                color: black, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 10),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: primary,
+                                    radius: 16,
+                                    child: Icon(
+                                      Icons.add_task_outlined,
+                                      color: white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                  VerticalDivider(
+                                    color: Colors.grey.shade200,
+                                    thickness: 1,
+                                  ),
+                                  Container(
+                                    width: 250,
                                     child: TextFormField(
-                                      controller: dateinput,
+                                      controller: _taskTitle,
+                                      cursorColor: Colors.grey.shade200,
+                                      onChanged: (text) {
+                                        print('onchanges ${text}   ${_taskTitle.value.text}');
+                                        // setState(() {
+                                        //   _taskTitle.text = text;
+                                        // });
+                                      },
                                       decoration: InputDecoration(
                                           border: InputBorder.none,
                                           focusedBorder: InputBorder.none,
@@ -445,105 +254,470 @@ class _CreateTaskState extends State<CreateTask> {
                                           disabledBorder: InputBorder.none,
                                           contentPadding: const EdgeInsets.only(
                                               left: 8,
-                                              bottom: 15,
-                                              top: 8,
-                                              right: 8),
-                                          hintText: "Date",
-                                          hintStyle: kHeadingFont.copyWith(color: black, fontSize: 10)),
-                                      readOnly: true,
-                                      onTap: () async {
-                                        DateTime? pickedDate = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2101));
-
-                                        if (pickedDate != null) {
-                                          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                          print(formattedDate);
-                                          setState(() {
-                                            dateinput.text = formattedDate;
-                                          });
-                                        } else {
-                                          print("Date is not selected");
-                                        }
-                                      },
+                                              bottom: 11,
+                                              top: 11,
+                                              right: 15),
+                                          hintText: "Task Title",
+                                          hintStyle: TextStyle(
+                                              color: Colors.grey.shade300)),
                                     ),
-                                  )),
+                                  )
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Assign To',
+                                style: kHeadingFont.copyWith(
+                                    color: black, fontSize: 18),
+                              ),
                             ],
-                          )
-                        ],
-                      )),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 35,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Description',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 18),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                  child: TextFormField(
-                    minLines: 5,
-                    maxLines: 10,
-                    keyboardType: TextInputType.multiline,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        fillColor: Colors.grey.shade100,
-                        filled: true,
-                        hintText: 'Type Here',
-                        hintStyle: TextStyle(color: Colors.grey.shade400)),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'Attachments',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 18),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(5)
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 10),
+                          child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  viewPage = "selectMember";
+                                });
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         const SelectMember()));
+                              },
+                              child: IntrinsicHeight(
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: primary,
+                                      radius: 16,
+                                      child: Icon(
+                                        Icons.add,
+                                        color: white,
+                                      ),
+                                    ),
+                                    VerticalDivider(
+                                      color: Colors.grey.shade200,
+                                      thickness: 1,
+                                    ),
+                                    Text(
+                                      '${assignedToName}',
+                                      style: kTextFont.copyWith(),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Text(
+                            'Priority',
+                            style: kHeadingFont.copyWith(
+                                color: black, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 10),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: primary,
+                                  radius: 16,
+                                  child: Icon(
+                                    Icons.priority_high,
+                                    color: white,
+                                    size: 18,
+                                  ),
+                                ),
+                                VerticalDivider(
+                                  color: Colors.grey.shade200,
+                                  thickness: 1,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _taskTypeIndex = 0;
+                                      _taskType = _taskTypeItem[_taskTypeIndex];
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: _taskTypeIndex == 0
+                                            ? primary
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(32),
+                                        border: Border.all(color: primary)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    child: Center(
+                                      child: Text(
+                                        "Low",
+                                        style: TextStyle(
+                                          color: _taskTypeIndex == 0
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _taskTypeIndex = 1;
+                                      _taskType = _taskTypeItem[_taskTypeIndex];
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: _taskTypeIndex == 1
+                                            ? primary
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(32),
+                                        border: Border.all(color: primary)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 8),
+                                    child: Center(
+                                      child: Text(
+                                        "Medium",
+                                        style: TextStyle(
+                                          color: _taskTypeIndex == 1
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _taskTypeIndex = 2;
+                                      _taskType = _taskTypeItem[_taskTypeIndex];
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: _taskTypeIndex == 2
+                                            ? primary
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(32),
+                                        border: Border.all(color: primary)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 8),
+                                    child: Center(
+                                      child: Text(
+                                        "High",
+                                        style: TextStyle(
+                                          color: _taskTypeIndex == 2
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Text(
+                            'Due Date',
+                            style: kHeadingFont.copyWith(
+                                color: black, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 10),
+                          child: Row(
+                            children: [
+                              // Expanded(
+                              //     child: Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     CircleAvatar(
+                              //       backgroundColor: primary,
+                              //       radius: 20,
+                              //       child: Icon(
+                              //         Icons.priority_high,
+                              //         color: white,
+                              //         size: 20,
+                              //       ),
+                              //     ),
+                              //     Column(
+                              //       crossAxisAlignment: CrossAxisAlignment.start,
+                              //       children: [
+                              //         Padding(
+                              //           padding: const EdgeInsets.only(left: 8.0, top: 1),
+                              //           child: Text(
+                              //             "Priority",
+                              //             style: kHeadingFont.copyWith(fontSize: 14),
+                              //           ),
+                              //         ),
+                              //         Padding(
+                              //           padding: const EdgeInsets.only(left: 5, right: 0),
+                              //           child: Container(
+                              //             height: 26,
+                              //             width: 100,
+                              //             child: Padding(
+                              //               padding: const EdgeInsets.only(left: 4.0),
+                              //               child: DropdownButton(
+                              //                 value: priorityValue,
+                              //                 icon: const Icon(Icons.keyboard_arrow_down),
+                              //                 items: priorityItems,
+                              //                 onChanged: (String? newValue) {
+                              //                   setState(() {
+                              //                     priorityValue = newValue!;
+                              //                   });
+                              //                 },
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     )
+                              //   ],
+                              // )),
+                              Expanded(
+                                  child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    // pressed = true;
+
+                                    DatePicker.showDateTimePicker(context,
+                                        showTitleActions: true,
+                                        onChanged: (date) {
+                                      print(
+                                          'change ${date.millisecondsSinceEpoch} ${date} in time zone ' +
+                                              date.timeZoneOffset.inHours
+                                                  .toString());
+                                    }, onConfirm: (date) {
+                                      setState(() {
+                                        selectedDateTime = date;
+                                      });
+                                    }, currentTime: DateTime.now());
+                                  });
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: primary,
+                                      radius: 16,
+                                      child: Icon(
+                                        Icons.calendar_today_rounded,
+                                        color: white,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    VerticalDivider(
+                                      color: Colors.grey.shade200,
+                                      thickness: 1,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, top: 12),
+                                          child: Text(
+                                            "${DateFormat('dd-MMMM-yyyy  kk:mm').format(selectedDateTime)}",
+                                            style: kTextFont.copyWith(),
+                                          ),
+                                        ),
+
+                                        // Padding(
+                                        //     padding: const EdgeInsets.only(
+                                        //         left: 0, top: 0),
+                                        //     child: Container(
+                                        //       height: 30,
+                                        //       width: 100,
+                                        //       child: TextFormField(
+                                        //         controller: dateinput,
+                                        //         decoration: InputDecoration(
+                                        //             border: InputBorder.none,
+                                        //             focusedBorder:
+                                        //                 InputBorder.none,
+                                        //             enabledBorder:
+                                        //                 InputBorder.none,
+                                        //             errorBorder:
+                                        //                 InputBorder.none,
+                                        //             disabledBorder:
+                                        //                 InputBorder.none,
+                                        //             contentPadding:
+                                        //                 const EdgeInsets.only(
+                                        //                     left: 8,
+                                        //                     bottom: 15,
+                                        //                     top: 8,
+                                        //                     right: 8),
+                                        //             hintText: "Date",
+                                        //             hintStyle:
+                                        //                 kHeadingFont.copyWith(
+                                        //                     color: black,
+                                        //                     fontSize: 10)),
+                                        //         readOnly: true,
+                                        //         onTap: () async {
+                                        //           DateTime? pickedDate =
+                                        //               await showDatePicker(
+                                        //                   context: context,
+                                        //                   initialDate:
+                                        //                       DateTime.now(),
+                                        //                   firstDate:
+                                        //                       DateTime.now(),
+                                        //                   lastDate:
+                                        //                       DateTime(2101));
+
+                                        //           if (pickedDate != null) {
+                                        //             String formattedDate =
+                                        //                 DateFormat('yyyy-MM-dd')
+                                        //                     .format(pickedDate);
+                                        //             print(formattedDate);
+                                        //             setState(() {
+                                        //               dateinput.text =
+                                        //                   formattedDate;
+                                        //             });
+                                        //           } else {
+                                        //             print(
+                                        //                 "Date is not selected");
+                                        //           }
+                                        //         },
+                                        //       ),
+                                        //     )),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 35,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Text(
+                            'Description',
+                            style: kHeadingFont.copyWith(
+                                color: black, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 20, right: 20),
+                          child: TextFormField(
+                            controller: _taskDescription,
+                            onChanged: (text) {
+                              // setState(() {
+                              //   _taskDescription.text = text;
+                              // });
+                            },
+                            minLines: 5,
+                            maxLines: 10,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                fillColor: Colors.grey.shade100,
+                                filled: true,
+                                hintText: 'Type Here',
+                                hintStyle:
+                                    TextStyle(color: Colors.grey.shade400)),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Text(
+                            'Attachments',
+                            style: kHeadingFont.copyWith(
+                                color: black, fontSize: 18),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, top: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(5)),
+                            alignment: Alignment.centerLeft,
+                            width: double.infinity,
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Icon(Icons.attachment_outlined),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 50, right: 50),
+                          child: customButton(),
+                        ),
+                      ],
                     ),
-                    alignment: Alignment.centerLeft,
-                    width: double.infinity,
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Icon(Icons.attachment_outlined),
-                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, left: 50, right: 50),
-                  child: customButton(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+              )
+            : SelectMember(
+                setPageViewerFun: setPageViewerFun,
+                assignedToDetailsFun: assignedToDetailsFun));
+  }
+
+  setPageViewerFun() {
+    setState(() {
+      viewPage = 'createHome';
+    });
+  }
+
+  assignedToDetailsFun(details) {
+    print('i was clicked ${details['department']} ');
+
+    setState(() {
+      assignedToName = details['name'];
+      assignedToUid = details['uid'];
+      assignedToEmail = details['email'];
+      assignedToDept = details['department']
+      
+      ;
+    });
   }
 
   Widget customButton() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        addUser();
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Container(
@@ -576,6 +750,13 @@ class _CreateTaskState extends State<CreateTask> {
         }
       },
       maxLength: 30,
+      onEditingComplete: () {
+        print('edit completed ');
+      },
+      onChanged: (value) {
+        print('i was changed  ${value}');
+        taskTitle = _taskTitle.text;
+      },
       onSaved: (value) {
         setState(() {
           taskTitle = value!;
@@ -690,8 +871,8 @@ class _CreateTaskState extends State<CreateTask> {
               value: bucketValue,
               onChanged: (String? newValue) async {
                 //call firebase function to get users where department == 'newValue'
-                var x = await DBQuery.instanace.getUsersByDept(newValue);
-                var y = await DBQuery.instanace
+                var x = await DbQuery.instanace.getUsersByDept(newValue);
+                var y = await DbQuery.instanace
                     .getTasksBySignedInUser(_auth.currentUser?.email);
                 print(y[0].data());
                 print(newValue);
