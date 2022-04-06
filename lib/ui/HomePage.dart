@@ -7,7 +7,7 @@ import 'package:todo/model/task.dart';
 import 'package:todo/ui/TaskViewPage.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:todo/ui/filters.dart';
-import 'package:todo/ui/firebase_help.dart';
+import 'package:todo/helpers/firebase_help.dart';
 import 'package:todo/helpers/theme.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -33,6 +33,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     TabController _tabController = TabController(length: 2, vsync: this);
     double width = MediaQuery.of(context).size.width;
 
@@ -63,7 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     )),
                                 onTap: () {
                                   Navigator.of(context)
-                                      .pushReplacement(MaterialPageRoute(
+                                      .push(MaterialPageRoute(
                                     builder: (context) => FilterLabels(),
                                   ));
                                 },
@@ -342,12 +345,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
- var todoTasks =
-      FirebaseFirestore.instance.collection('spark_assignedTasks');
+ var todoTasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
   // .where("to_uid", isNotEqualTo: _auth.currentUser?.email)
   // .where("status", isEqualTo: "");
   Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('spark_assignedTasks').snapshots(),
+        stream: FirebaseFirestore.instance.collection('spark_assignedTasks').where("to_email", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "InProgress").snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -370,7 +372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 itemBuilder: (context, index) {
                   late QueryDocumentSnapshot<Object?>? taskData =
                       snapshot.data?.docs[index];
-                  print("qwdqwdw ${taskData?.data()}");
+                  print("qwdqwdw ${taskData?.id}");
                   // print(
                   //     "date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
                   // print("due date is ${taskData!.get('due data')}");
@@ -378,9 +380,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: GestureDetector(
                       onTap: () {
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        //   builder: (context) => TaskViewPage(taskData: taskData.data(),),
-                        // ));
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => TaskViewPage(taskData: taskData?.data(), taskId: taskData?.id),
+                        ));
                       },
                       child: Container(
                         decoration: BoxDecoration(

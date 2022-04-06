@@ -4,13 +4,13 @@ class DbQuery {
   static DbQuery get instanace => DbQuery();
 
   getLoggedInUserDetails(uid) async {
-    QuerySnapshot userData = await FirebaseFirestore.instance
+    var LoggedInUserDetails = await FirebaseFirestore.instance
         .collection('users')
-        .where('uid', isEqualTo: uid)
+        .where("uid", isEqualTo: uid)
         .get();
-
-    if (!userData.docs.isEmpty) {
-      return userData.docs.toList();
+    print("uid is $uid");
+    if (!LoggedInUserDetails.docs.isEmpty) {
+      return LoggedInUserDetails.docs.toList();
     } else {
       return null;
     }

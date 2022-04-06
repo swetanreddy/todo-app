@@ -40,7 +40,7 @@ class _startUpPageState extends State<startUpPage> {
         foregroundColor: Colors.white,
         backgroundColor: primary,
         onPressed: () {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const CreateTask(),
           ));
         },

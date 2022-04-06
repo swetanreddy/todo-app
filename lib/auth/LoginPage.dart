@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:todo/helpers/methods.dart';
 import 'package:todo/ui/startup.dart';
 import 'package:todo/helpers/theme.dart';
-import 'package:todo/ui/firebase_help.dart';
+import 'package:todo/helpers/firebase_help.dart';
 
 import '../ui/ButtonClass.dart';
 

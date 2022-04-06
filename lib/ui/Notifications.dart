@@ -8,8 +8,8 @@ import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/HomePage.dart';
 import 'package:todo/ui/ProfilePage.dart';
 import 'package:todo/ui/SelectMembers.dart';
-import 'package:todo/ui/firebase_help.dart';
-import 'package:todo/ui/firebase_help.dart';
+import 'package:todo/helpers/firebase_help.dart';
+import 'package:todo/helpers/firebase_help.dart';
 import 'package:todo/helpers/theme.dart';
 
 class Notifications extends StatefulWidget {

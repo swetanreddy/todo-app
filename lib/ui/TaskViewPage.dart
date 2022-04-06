@@ -1,16 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:todo/model/taskData.dart';
+import 'package:todo/ui/TaskEdit.dart';
 import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/TaskEditPage.dart';
 import 'package:todo/helpers/theme.dart';
 
 class TaskViewPage extends StatefulWidget {
-  TaskData? taskData;
 
-  TaskViewPage({Key? key, this.taskData}) : super(key: key);
 
+  TaskViewPage({Key? key, this.taskData, this.taskId}) : super(key: key);
+  final taskData;
+  final taskId;
   @override
   _TaskViewPageState createState() => _TaskViewPageState();
 }
@@ -38,15 +41,16 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                       width: 35,
                       image: AssetImage('assets/images/backarrow.png',),
                     ),
-                    onTap: (){
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const startUpPage()));}
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    }
                     ),
                   Text('Task Details',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
                   IconButton(
-                    icon: const Icon(Icons.delete),
+                    icon: const Icon(Icons.edit),
                     onPressed: () {
                       print(widget.taskData);
-                      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const TaskEditPage()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => EditTask(taskDetails: widget.taskData, taskId : widget.taskId)));
                     },
                   ),
                 ],
@@ -61,19 +65,19 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                       Padding(
                         padding: const EdgeInsets.only(top: 16,bottom: 5),
                         child: Text(
-                          "Task Title",
+                          "${widget.taskData['task_title']}",
                           style: kTitleFont.copyWith(fontSize: 22)
                         ),
                       ),
                       Row(
                         children: [
                           Text(
-                            "Tag",
+                            "${widget.taskData['dept']}",
                             style: kHeadingFont.copyWith(fontSize: 12),
                           ),
                           const SizedBox(width: 20,),
                           Text(
-                            "Priority: Priority",
+                            "Priority: ${widget.taskData['priority']}",
                             style: kHeadingFont.copyWith(fontSize: 12),
                           ),
                         ],
@@ -94,7 +98,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left:8.0,top: 1),
-                                      child: Text("Swetan",style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
+                                      child: Text(widget.taskData['to_name'],style: kHeadingFont.copyWith(color: black,fontSize: 13.5),),),
                                   ],
                                 ),
                               ],
@@ -126,9 +130,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
-                          "Of course, deeply understanding your users and their needs is the foundation"
-                              " of any food product. But that also means understanding all types of users"
-                              "and cases",
+                          "${widget.taskData['task_desc']}",
                           style:kDescFont,
                         ),
                       ),
@@ -168,20 +170,27 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
             const Divider(thickness: 1),
             Padding(
               padding: const EdgeInsets.only(left: 22,right: 22, bottom: 8.0),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                decoration: BoxDecoration(
-                  color: primary,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: const Center(
-                  child: Text(
-                    "Done",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              child: GestureDetector(
+                onTap: () {
+                  CollectionReference tasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
+                  tasks.doc(widget.taskId).update({"status": "Done"}).then((value) => "Print Task status updated to Done!");
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const startUpPage()));
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: primary,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "Done",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

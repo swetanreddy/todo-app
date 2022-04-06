@@ -5,9 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/ui/HomePage.dart';
 import 'package:todo/ui/startup.dart';
 import 'package:todo/ui/SelectMembers.dart';
-import 'package:todo/ui/firebase_help.dart';
+import 'package:todo/helpers/firebase_help.dart';
 import 'package:todo/helpers/theme.dart';
 
 class CreateTask extends StatefulWidget {
@@ -22,7 +23,7 @@ class _CreateTaskState extends State<CreateTask> {
   String taskTitle = '';
   String taskDescription = '';
   String? bucketValue;
-  String? statusValue;
+  String? statusValue = 'InProgress';
   String? priorityValue;
   String? assignedToUserName;
   String? assignedToUserEmail;
@@ -37,9 +38,9 @@ class _CreateTaskState extends State<CreateTask> {
 
   int _taskTypeIndex = 0;
   List<String> _taskTypeItem = [
-    "Basic",
-    "Urgent",
-    "Important",
+    "Low",
+    "Medium",
+    "High",
   ];
   String _taskType = "Basic";
 
@@ -50,6 +51,8 @@ class _CreateTaskState extends State<CreateTask> {
   bool showUsers = false;
 
   var usersDeptArray = [];
+
+  var loggedInUserDetails = DbQuery.instanace.getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -98,10 +101,11 @@ class _CreateTaskState extends State<CreateTask> {
           'created_on': DateTime.now().millisecondsSinceEpoch,
           'due_date': selectedDateTime.microsecondsSinceEpoch,
           'by_email': _auth.currentUser?.email,
-          'by_name': _auth.currentUser?.displayName,
+          'by_name': loggedInUserName,
           'by_uid': _auth.currentUser?.uid,
           'to_name': assignedToName,
           'to_uid': assignedToUid,
+          'priority': _taskType,
           'to_email': assignedToEmail,
           'dept': assignedToDept,
           'status': statusValue,
@@ -111,6 +115,7 @@ class _CreateTaskState extends State<CreateTask> {
   }
 
   String? fileName;
+  String? loggedInUserName;
   String? path;
   late Map<String, String> paths;
   String? extension;
@@ -132,10 +137,18 @@ class _CreateTaskState extends State<CreateTask> {
   //     }
   //   }
   // }
+  void getLoggedInUserDetails() async {
+    var x = await DbQuery.instanace.getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
+    setState(() {
+      loggedInUserName = "${x[0].data()['name']}";
+    });
+    print("ewfwfe data is ${x[0].data()['name']}");
+  }
 
   @override
   void initState() {
     dateinput.text = "";
+    getLoggedInUserDetails();
     super.initState();
   }
 
@@ -184,10 +197,7 @@ class _CreateTaskState extends State<CreateTask> {
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                const startUpPage()));
+                                    Navigator.of(context).pop();
                                   }),
                               Text('CREATE TASK',
                                   style: kHeadingFont.copyWith(
@@ -242,6 +252,7 @@ class _CreateTaskState extends State<CreateTask> {
                                       cursorColor: Colors.grey.shade200,
                                       onChanged: (text) {
                                         print('onchanges ${text}   ${_taskTitle.value.text}');
+
                                         // setState(() {
                                         //   _taskTitle.text = text;
                                         // });
@@ -717,6 +728,10 @@ class _CreateTaskState extends State<CreateTask> {
     return GestureDetector(
       onTap: () {
         addUser();
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (_) =>
+                const startUpPage()));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
