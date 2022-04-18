@@ -190,8 +190,8 @@ class _CreateTaskState extends State<CreateTask> {
                             children: [
                               GestureDetector(
                                   child: const Image(
-                                    height: 20,
-                                    width: 20,
+                                    height: 30,
+                                    width: 30,
                                     image: const AssetImage(
                                       'assets/images/backarrow.png',
                                     ),
@@ -199,11 +199,10 @@ class _CreateTaskState extends State<CreateTask> {
                                   onTap: () {
                                     Navigator.of(context).pop();
                                   }),
-                              Text('CREATE TASK',
+                              Text('Create Task',
                                   style: kHeadingFont.copyWith(
                                       color: black,
-                                      fontSize: 18,
-                                      letterSpacing: 0.8)),
+                                      fontSize: 17,)),
                               IconButton(
                                 icon: const Icon(
                                   Icons.edit,
@@ -223,7 +222,7 @@ class _CreateTaskState extends State<CreateTask> {
                           child: Text(
                             'Task Title',
                             style: kHeadingFont.copyWith(
-                                color: black, fontSize: 18),
+                                color: black, fontSize: 14.5),
                           ),
                         ),
                         Padding(
@@ -270,7 +269,7 @@ class _CreateTaskState extends State<CreateTask> {
                                               right: 15),
                                           hintText: "Task Title",
                                           hintStyle: TextStyle(
-                                              color: Colors.grey.shade300)),
+                                              color: Colors.grey.shade300,fontSize: 15)),
                                     ),
                                   )
                                 ],
@@ -284,7 +283,7 @@ class _CreateTaskState extends State<CreateTask> {
                               Text(
                                 'Assign To',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 18),
+                                    color: black, fontSize: 14.5),
                               ),
                             ],
                           ),
@@ -332,7 +331,7 @@ class _CreateTaskState extends State<CreateTask> {
                           child: Text(
                             'Priority',
                             style: kHeadingFont.copyWith(
-                                color: black, fontSize: 18),
+                                color: black, fontSize: 14.5),
                           ),
                         ),
                         Padding(
@@ -366,7 +365,7 @@ class _CreateTaskState extends State<CreateTask> {
                                         color: _taskTypeIndex == 0
                                             ? primary
                                             : Colors.white,
-                                        borderRadius: BorderRadius.circular(32),
+                                        borderRadius: BorderRadius.circular(5),
                                         border: Border.all(color: primary)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 8),
@@ -377,7 +376,7 @@ class _CreateTaskState extends State<CreateTask> {
                                           color: _taskTypeIndex == 0
                                               ? Colors.white
                                               : Colors.black,
-                                          fontSize: 16,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ),
@@ -398,7 +397,7 @@ class _CreateTaskState extends State<CreateTask> {
                                         color: _taskTypeIndex == 1
                                             ? primary
                                             : Colors.white,
-                                        borderRadius: BorderRadius.circular(32),
+                                        borderRadius: BorderRadius.circular(5),
                                         border: Border.all(color: primary)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 8),
@@ -409,7 +408,7 @@ class _CreateTaskState extends State<CreateTask> {
                                           color: _taskTypeIndex == 1
                                               ? Colors.white
                                               : Colors.black,
-                                          fontSize: 16,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ),
@@ -430,7 +429,7 @@ class _CreateTaskState extends State<CreateTask> {
                                         color: _taskTypeIndex == 2
                                             ? primary
                                             : Colors.white,
-                                        borderRadius: BorderRadius.circular(32),
+                                        borderRadius: BorderRadius.circular(5),
                                         border: Border.all(color: primary)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 8),
@@ -441,7 +440,7 @@ class _CreateTaskState extends State<CreateTask> {
                                           color: _taskTypeIndex == 2
                                               ? Colors.white
                                               : Colors.black,
-                                          fontSize: 16,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ),
@@ -459,7 +458,7 @@ class _CreateTaskState extends State<CreateTask> {
                           child: Text(
                             'Due Date',
                             style: kHeadingFont.copyWith(
-                                color: black, fontSize: 18),
+                                color: black, fontSize: 14.5),
                           ),
                         ),
                         Padding(
@@ -636,7 +635,7 @@ class _CreateTaskState extends State<CreateTask> {
                           child: Text(
                             'Description',
                             style: kHeadingFont.copyWith(
-                                color: black, fontSize: 18),
+                                color: black, fontSize: 14.5),
                           ),
                         ),
                         Padding(
@@ -662,7 +661,7 @@ class _CreateTaskState extends State<CreateTask> {
                                 filled: true,
                                 hintText: 'Type Here',
                                 hintStyle:
-                                    TextStyle(color: Colors.grey.shade400)),
+                                    TextStyle(color: Colors.grey.shade400,fontSize: 15)),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -671,7 +670,7 @@ class _CreateTaskState extends State<CreateTask> {
                           child: Text(
                             'Attachments',
                             style: kHeadingFont.copyWith(
-                                color: black, fontSize: 18),
+                                color: black, fontSize: 14.5),
                           ),
                         ),
                         Padding(
@@ -745,7 +744,7 @@ class _CreateTaskState extends State<CreateTask> {
             alignment: Alignment.center,
             child: Text(
               "Create Now",
-              style: kSubmitFont,
+              style: kButtonFont,
             )),
       ),
     );

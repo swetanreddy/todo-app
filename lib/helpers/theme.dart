@@ -12,53 +12,52 @@ TextStyle kHeadingFont = GoogleFonts.montserrat(
   color: greyHeading,
   fontWeight: FontWeight.w500,
   fontSize: 12,
-    letterSpacing: 0.8
 );
 
 TextStyle kTextFont = GoogleFonts.montserrat(
   color: black,
   fontWeight: FontWeight.w600,
-  fontSize: 13,letterSpacing: 0.8
+  fontSize: 13
 );
 
 TextStyle kTitleFont = GoogleFonts.montserrat(
   color: black,
   fontWeight: FontWeight.w500,
-  fontSize: 30,letterSpacing: 0.8
+  fontSize: 30
 );
 
 TextStyle kSubTitleFont = GoogleFonts.montserrat(
   color: greyHeading,
   fontWeight: FontWeight.w400,
-  fontSize: 12,letterSpacing: 0.8
+  fontSize: 12
 );
 TextStyle kButtonFont = GoogleFonts.montserrat(
   color: white,
   fontWeight: FontWeight.w600,
-  fontSize: 12,letterSpacing: 0.8
+  fontSize: 12
 );
 
 TextStyle kSubmitFont = GoogleFonts.montserrat(
     color: white,
     fontWeight: FontWeight.w600,
-    fontSize: 20,letterSpacing: 0.8
+    fontSize: 20
 );
 
 
 TextStyle kCardTitleFont = GoogleFonts.montserrat(
   color: black,
   fontWeight: FontWeight.w600,
-  fontSize: 16,letterSpacing: 0.8
+  fontSize: 16
 );
 TextStyle kCardHeaderFont = GoogleFonts.montserrat(
   color: Color(0xff232530),
   fontWeight: FontWeight.w400,
-  fontSize: 11,letterSpacing: 0.8
+  fontSize: 11
 );
 
 
 TextStyle kDescFont = GoogleFonts.montserrat(
   color: greyHeading,
   fontWeight: FontWeight.w400,
-  fontSize: 12,letterSpacing: 0.8
+  fontSize: 12
 );

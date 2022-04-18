@@ -31,9 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 Center(
                   child: Text(
                     'Profile',
-                    style:
-                        kHeadingFont.copyWith(color: black, fontSize: 22),
-                  ),
+                      style: kHeadingFont.copyWith(
+                        color: black,
+                        fontSize: 18,)),
                 ),
                 const SizedBox(
                   height: 15,
