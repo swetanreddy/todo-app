@@ -45,7 +45,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                       Navigator.of(context).pop();
                     }
                     ),
-                  Text('Task Details',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
+                  Text('Task Details',style: kHeadingFont.copyWith(color: black,fontSize: 17),),
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
@@ -66,23 +66,23 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                         padding: const EdgeInsets.only(top: 16,bottom: 5),
                         child: Text(
                           "${widget.taskData['task_title']}",
-                          style: kTitleFont.copyWith(fontSize: 22)
+                          style: kTitleFont.copyWith(fontSize: 18,letterSpacing: 0)
                         ),
                       ),
                       Row(
                         children: [
                           Text(
                             "${widget.taskData['dept']}",
-                            style: kHeadingFont.copyWith(fontSize: 12),
+                            style: kHeadingFont.copyWith(fontSize: 12,letterSpacing: 0,color: greyHeading.withOpacity(0.6)),
                           ),
-                          const SizedBox(width: 20,),
+                          const SizedBox(width: 5,),
                           Text(
-                            "Priority: ${widget.taskData['priority']}",
-                            style: kHeadingFont.copyWith(fontSize: 12),
+                            "|  Priority: ${widget.taskData['priority']}",
+                            style: kHeadingFont.copyWith(fontSize: 12,letterSpacing: 0,color: greyHeading.withOpacity(0.6)),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 30),
                       Row(
                         children: [
                           Expanded(
@@ -94,7 +94,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(left:8.0,top: 1),
-                                      child:  Text("Assigned To",style: kHeadingFont.copyWith(fontSize: 11),),
+                                      child:  Text("Assigned To",style: kHeadingFont.copyWith(fontSize: 11,color: greyHeading.withOpacity(0.6)),),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left:8.0,top: 1),
@@ -113,7 +113,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(left:8.0,top: 1),
-                                      child:  Text("Due date",style: kHeadingFont.copyWith(fontSize: 11),),
+                                      child:  Text("Due date",style: kHeadingFont.copyWith(fontSize: 11,color: greyHeading.withOpacity(0.6)),),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(left:8.0,top: 1),
@@ -126,7 +126,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                         ],
                       ),
                       const SizedBox(height: 30,),
-                      Text('Description',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
+                      Text('Description',style: kHeadingFont.copyWith(color: black,fontSize: 14,letterSpacing: 0),),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
@@ -143,12 +143,14 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                         child: Container(
                           child: TabBar(
                             controller: _tabController,
-                            indicatorColor: Colors.black,
+                            indicatorColor: primary,
+                            indicatorWeight: 2,
+                            indicatorSize: TabBarIndicatorSize.tab,
                             labelStyle: const TextStyle(fontSize: 14.0, color: Colors.black),
                             unselectedLabelStyle: const TextStyle(fontSize: 14.0, color: Colors.black),
-                            tabs: const [
-                              Tab(child: Text("Comments", style: TextStyle(color: Colors.black),),),
-                              Tab(child: Text("Timeline", style: TextStyle(color: Colors.black),),)
+                            tabs:  [
+                              Tab(child: Text("Comments", style: kHeadingFont.copyWith(fontSize: 12,letterSpacing: 0,color: Colors.black),),),
+                              Tab(child: Text("Timeline", style: kHeadingFont.copyWith(fontSize: 12,letterSpacing: 0,color: Colors.black),),),
                             ],
                           ),
                         ),
@@ -211,8 +213,12 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Comments",
-                style: kHeadingFont.copyWith(color: black,fontSize: 14)
+
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0,left: 8),
+              child: Text("Comments",
+                  style: kHeadingFont.copyWith(color: black,fontSize: 14,letterSpacing: 0)
+              ),
             ),
             SizedBox(
               child: Center(
@@ -246,7 +252,7 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: "Add a comment...",
-                            hintStyle: TextStyle(color: Colors.black54)),
+                            hintStyle: TextStyle(color: Colors.black54,fontSize: 12)),
                       )),
                   IconButton(
                       onPressed: () {
@@ -274,66 +280,66 @@ class _TaskViewPageState extends State<TaskViewPage> with SingleTickerProviderSt
               alignment: TimelineAlign.manual,
               lineXY: 0.1,
               isFirst: true,
-              indicatorStyle: const IndicatorStyle(
-                width: 20,
-                color: Colors.black,
-                padding: EdgeInsets.all(6),
+              indicatorStyle: IndicatorStyle(
+                width: 15,
+                color: primary,
+                padding: EdgeInsets.all(3),
               ),
               endChild: const _RightChild(
                 title: 'Created on',
                 message: 'Admin created task on 25-feb',
               ),
-              beforeLineStyle: const LineStyle(
-                color: Colors.black,
+              beforeLineStyle: LineStyle(
+                color: primary.withOpacity(0.6),
               ),
             ),
             TimelineTile(
               alignment: TimelineAlign.manual,
               lineXY: 0.1,
-              indicatorStyle: const IndicatorStyle(
-                width: 20,
-                color: Colors.black,
-                padding: EdgeInsets.all(6),
+              indicatorStyle: IndicatorStyle(
+                width: 15,
+                color: primary,
+                padding: EdgeInsets.all(3),
               ),
               endChild: const _RightChild(
                 title: 'Assigned to',
                 message: 'Task has been assigned from user1 to \nuser2',
               ),
-              beforeLineStyle: const LineStyle(
-                color: Colors.black,
+              beforeLineStyle: LineStyle(
+                color: primary.withOpacity(0.6),
               ),
             ),
             TimelineTile(
               alignment: TimelineAlign.manual,
               lineXY: 0.1,
-              indicatorStyle: const IndicatorStyle(
-                width: 20,
-                color: Colors.black,
-                padding: EdgeInsets.all(6),
+              indicatorStyle: IndicatorStyle(
+                width: 15,
+                color: primary,
+                padding: EdgeInsets.all(3),
               ),
               endChild: const _RightChild(
                 title: 'Attachmenmts',
                 message: 'User 2 added attachments',
               ),
-              beforeLineStyle: const LineStyle(
-                color: Colors.black,
+              beforeLineStyle: LineStyle(
+                color: primary.withOpacity(0.6),
               ),
             ),
             TimelineTile(
               alignment: TimelineAlign.manual,
               lineXY: 0.1,
               isLast: true,
-              indicatorStyle: const IndicatorStyle(
-                width: 20,
-                color: Colors.black,
-                padding: EdgeInsets.all(6),
+              indicatorStyle: IndicatorStyle(
+                width: 15,
+                color: primary,
+                padding: EdgeInsets.all(3),
               ),
               endChild: const _RightChild(
                 title: 'Done',
                 message: 'Task was done before due date. \nCompleted on feb 28.',
               ),
-              beforeLineStyle: const LineStyle(
-                color: Colors.black,
+              beforeLineStyle: LineStyle(
+                color: primary.withOpacity(0.6),
               ),
             ),
           ],

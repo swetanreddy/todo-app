@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 
 
-    TabController _tabController = TabController(length: 2, vsync: this);
+    TabController _tabController = TabController(length: 3, vsync: this);
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Text(
                                 'Task Manager',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 22),
+                                    color: black, fontSize: 18),
                               ),
                               NamedIcon(
                                 text: '',
@@ -98,28 +98,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     height: 25,
                   ),
                   SizedBox(
-                    height: 30,
+                    height: 40,
                     child: TabBar(
                       isScrollable: false,
                       controller: _tabController,
-                      // labelColor: Colors.black,
+                      labelColor: Colors.black,
                       unselectedLabelColor: Colors.black,
                       tabs: [
                         Tab(
                           child: Text("Today",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 13.5, fontWeight: FontWeight.w500)),
+                                  fontSize: 11, fontWeight: FontWeight.w500)),
                         ),
                         Tab(
                           child: Text("Upcoming",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 13.5, fontWeight: FontWeight.w500)),
+                                  fontSize: 11, fontWeight: FontWeight.w500)),
+                        ),Tab(
+                          child: Text("Created by me",
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 11, fontWeight: FontWeight.w500)),
                         ),
                       ],
-                      indicator: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(radius)),
-                          color: primary),
+                      indicatorWeight: 3,
+                      indicatorColor: primary,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      //indicatorPadding: const EdgeInsets.all(10),
                     ),
                   ),
                   SizedBox(
@@ -128,6 +132,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: TabBarView(controller: _tabController, children: [
                       _tasksTodo(),
                       //_fetchNewStatusTasks(),
+                      _fetchInprogressStatusTasks(),
                       _fetchInprogressStatusTasks(),
                     ]),
                   ),
