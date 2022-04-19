@@ -19,7 +19,7 @@ class _AllTasksTeamState extends State<AllTasksTeam> {
     var x = await DbQuery.instanace
         .getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
     setState(() {
-      dept = "${x[0].data()['department'][0]}";
+      dept = "${x[0].data()['department']}";
     });
     setState(() {});
     print("ewfwfe data is ${x[0].data()['department']}");

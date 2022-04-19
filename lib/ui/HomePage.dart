@@ -33,9 +33,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     TabController _tabController = TabController(length: 2, vsync: this);
     double width = MediaQuery.of(context).size.width;
 
@@ -65,8 +62,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       'assets/images/menu.png',
                                     )),
                                 onTap: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
+                                  Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => FilterLabels(),
                                   ));
                                 },
@@ -345,11 +341,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
- var todoTasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
+  var todoTasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
   // .where("to_uid", isNotEqualTo: _auth.currentUser?.email)
   // .where("status", isEqualTo: "");
   Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('spark_assignedTasks').where("to_email", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "InProgress").snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('spark_assignedTasks')
+            .where("to_email", isEqualTo: _auth.currentUser?.email)
+            .where("status", isEqualTo: "InProgress")
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -381,7 +381,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TaskViewPage(taskData: taskData?.data(), taskId: taskData?.id),
+                          builder: (context) => TaskViewPage(
+                              taskData: taskData?.data(), taskId: taskData?.id),
                         ));
                       },
                       child: Container(

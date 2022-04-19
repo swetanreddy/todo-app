@@ -52,7 +52,8 @@ class _CreateTaskState extends State<CreateTask> {
 
   var usersDeptArray = [];
 
-  var loggedInUserDetails = DbQuery.instanace.getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
+  var loggedInUserDetails = DbQuery.instanace
+      .getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -138,7 +139,8 @@ class _CreateTaskState extends State<CreateTask> {
   //   }
   // }
   void getLoggedInUserDetails() async {
-    var x = await DbQuery.instanace.getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
+    var x = await DbQuery.instanace
+        .getLoggedInUserDetails(FirebaseAuth.instance.currentUser?.uid);
     setState(() {
       loggedInUserName = "${x[0].data()['name']}";
     });
@@ -251,7 +253,8 @@ class _CreateTaskState extends State<CreateTask> {
                                       controller: _taskTitle,
                                       cursorColor: Colors.grey.shade200,
                                       onChanged: (text) {
-                                        print('onchanges ${text}   ${_taskTitle.value.text}');
+                                        print(
+                                            'onchanges ${text}   ${_taskTitle.value.text}');
 
                                         // setState(() {
                                         //   _taskTitle.text = text;
@@ -718,9 +721,7 @@ class _CreateTaskState extends State<CreateTask> {
       assignedToName = details['name'];
       assignedToUid = details['uid'];
       assignedToEmail = details['email'];
-      assignedToDept = details['department']
-      
-      ;
+      assignedToDept = details['department'];
     });
   }
 
@@ -729,9 +730,7 @@ class _CreateTaskState extends State<CreateTask> {
       onTap: () {
         addUser();
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (_) =>
-                const startUpPage()));
+            MaterialPageRoute(builder: (_) => const startUpPage()));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
