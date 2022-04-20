@@ -12,7 +12,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   final User? currentUser = FirebaseAuth.instance.currentUser;
   String txt = '';
   @override
@@ -28,11 +27,13 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
                 Center(
                   child: Text(
                     'Profile',
-                    style:
-                        kHeadingFont.copyWith(color: black, fontSize: 22),
+                    style: kHeadingFont.copyWith(color: black, fontSize: 22),
                   ),
                 ),
                 const SizedBox(
@@ -41,15 +42,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 Center(
                     child: CircleAvatar(
                   backgroundColor: Colors.greenAccent,
-                  radius: 65,
-                  child: Image.asset('assets/images/profile.png'),
+                  radius: 45,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                  // child: Image.asset('assets/images/profile.png'),
                 )),
                 const SizedBox(
                   height: 25,
                 ),
                 Center(
                     child: Text(
-                  "Ahnaf Irfan",
+                  "${currentUser?.displayName}",
                   style: kTitleFont.copyWith(fontSize: 18),
                 )),
                 Center(
@@ -123,8 +129,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     selected: true,
                     onTap: () {
                       setState(() {
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => const Notifications()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (_) => const Notifications()));
                       });
                     },
                   ),

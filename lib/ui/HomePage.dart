@@ -21,6 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var radius = const Radius.circular(20);
+  final User? currentUser = FirebaseAuth.instance.currentUser;
 
   CalendarController? _controller;
   var doneTasks = [];
@@ -84,7 +85,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         const SizedBox(
                           height: 25,
                         ),
-                        Text("Welcome Back!", style: kHeadingFont),
+                        Text("Welcome Back! ${currentUser?.displayName}",
+                            style: kHeadingFont),
                         const SizedBox(height: 7),
                         Text("Here's Update Today.", style: kCardTitleFont),
                       ],
