@@ -10,6 +10,7 @@ import 'package:todo/ui/filters.dart';
 import 'package:todo/helpers/firebase_help.dart';
 import 'package:todo/helpers/theme.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     child: const Icon(
                                       Icons.menu,
                                       color: Colors.white,
-                                      size: 20,
+                                      size: 18,
                                       // height: 35,
                                       // width: 35,
                                       // image: AssetImage(
@@ -84,7 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Text(
                                 'Task Manager',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 20),
+                                    color: black, fontSize: 18),
                               ),
                               NamedIcon(
                                 text: '',
@@ -96,64 +97,110 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         const SizedBox(
-                          height: 25,
+                          height: 15,
                         ),
-                        Text("Welcome Back! ${currentUser?.displayName}",
-                            style: kHeadingFont),
-                        const SizedBox(height: 7),
-                        Text("Here's Update Today.", style: kCardTitleFont),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Text("Welcome, ${currentUser?.displayName} 👋",
+                                      style: kCardTitleFont.copyWith(fontSize: 17.5)),
+                                ),
+                                const SizedBox(height: 7),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Row(
+                                    children: [
+                                      Text("⚡ 7 tasks ", style: kCardTitleFont.copyWith(fontSize: 10,color: Colors.blue,letterSpacing: 0.1)),
+                                      Text("are waiting for you today", style: kCardTitleFont.copyWith(fontSize: 10,color: Colors.grey,letterSpacing: 0.1)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            CircularPercentIndicator(
+                              radius: 33.0,
+                              lineWidth: 5.0,
+                              percent: 0.3,
+                              center: Text("30%",style: kHeadingFont.copyWith(color: Colors.black),),
+                              progressColor: lightBlue,
+                              animationDuration: 1200,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              backgroundColor: Colors.grey.withOpacity(0.2),
+                            )
+                          ],
+                        ),
+
                       ],
                     ),
                   ),
                   const SizedBox(
-                    height: 25,
+                    height: 0,
                   ),
                   SizedBox(
                     // height: 30,
                     child: TabBar(
                       isScrollable: true,
                       controller: _tabController,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.black,
+                      labelColor: primary,
+                      unselectedLabelColor: Colors.black.withOpacity(0.4),
                       tabs: [
                         Tab(
                           child: Text("TODAY",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.3)),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.2)),
                         ),
                         Tab(
                           child: Text("UPCOMING",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                   letterSpacing: 0.2)),
                         ),
                         Tab(
                           child: Text("CREATED BY ME",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w500,
-                                  letterSpacing: 0.3)),
+                                  letterSpacing: 0.2)),
                         ),
                       ],
                       indicatorWeight: 3,
-                      indicatorColor: primary,
+                      indicatorColor: Colors.transparent,
                       indicatorSize: TabBarIndicatorSize.tab,
                       //indicatorPadding: const EdgeInsets.all(10),
                     ),
                   ),
-                  SizedBox(
-                    width: width * 1,
-                    height: 620,
-                    child: TabBarView(controller: _tabController, children: [
-                      _tasksTodo(),
-                      //_fetchNewStatusTasks(),
-                      _fetchInprogressStatusTasks(),
-                      Text("hello")
-                      // _fetchInprogressStatusTasks(),
-                    ]),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10,top:8),
+                      child: Text("My Task",
+                          style: GoogleFonts.montserrat(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.2)),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: SizedBox(
+                      width: width * 1,
+                      height: 620,
+                      child: TabBarView(controller: _tabController, children: [
+                        _tasksTodo(),
+                        //_fetchNewStatusTasks(),
+                        _fetchInprogressStatusTasks(),
+                        Text("hello")
+                        // _fetchInprogressStatusTasks(),
+                      ]),
+                    ),
                   ),
                 ],
               ),
