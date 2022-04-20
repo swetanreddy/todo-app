@@ -40,7 +40,7 @@ class _doneTasksPersonalState extends State<doneTasksPersonal> {
                           Navigator.of(context).pop();
                         }
                     ),
-                    Text('Task Details',style: kHeadingFont.copyWith(color: black,fontSize: 14),),
+                    Text('Task Details',style: kHeadingFont.copyWith(color: black,fontSize: 18),),
                     IconButton(
                       icon: const Icon(Icons.edit),
                       color: Colors.white,
@@ -49,11 +49,14 @@ class _doneTasksPersonalState extends State<doneTasksPersonal> {
                   ],
                 ),
               ),
-              const Divider(thickness: 2),
+              // const Divider(thickness: 2),
               SizedBox(
                 width: width * 1,
                 height: height * 0.85,
-                child: _personalDoneTasks(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _personalDoneTasks(),
+                ),
               ),
             ],
           ),

@@ -184,7 +184,7 @@ class _OnboardingState extends State<Onboarding> {
                         MaterialPageRoute(builder: (_) => Authenticate()));
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 30, left: 0, right: 20),
+                    padding: const EdgeInsets.only(top: 30, left: 0, right: 5),
                     child: Container(
                       height: 50,
                       width: 50,

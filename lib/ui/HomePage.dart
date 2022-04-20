@@ -33,16 +33,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     TabController _tabController = TabController(length: 3, vsync: this);
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Color(0xffECF0F3),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 22, right: 22, top: 30.0),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 30.0),
           child: Column(
             children: [
               Column(
@@ -53,7 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 0, bottom: 0),
+                          padding: const EdgeInsets.only(top: 10, bottom: 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -65,8 +63,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       'assets/images/menu.png',
                                     )),
                                 onTap: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
+                                  Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => FilterLabels(),
                                   ));
                                 },
@@ -74,7 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Text(
                                 'Task Manager',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 18),
+                                    color: black, fontSize: 20),
                               ),
                               NamedIcon(
                                 text: '',
@@ -98,26 +95,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     height: 25,
                   ),
                   SizedBox(
-                    height: 40,
+                    // height: 30,
                     child: TabBar(
-                      isScrollable: false,
+                      isScrollable: true,
                       controller: _tabController,
                       labelColor: Colors.black,
                       unselectedLabelColor: Colors.black,
                       tabs: [
                         Tab(
-                          child: Text("Today",
+                          child: Text("TODAY",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 11, fontWeight: FontWeight.w500)),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.3)),
                         ),
                         Tab(
-                          child: Text("Upcoming",
+                          child: Text("UPCOMING",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 11, fontWeight: FontWeight.w500)),
-                        ),Tab(
-                          child: Text("Created by me",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.2)),
+                        ),
+                        Tab(
+                          child: Text("CREATED BY ME",
                               style: GoogleFonts.montserrat(
-                                  fontSize: 11, fontWeight: FontWeight.w500)),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.3)),
                         ),
                       ],
                       indicatorWeight: 3,
@@ -133,7 +137,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       _tasksTodo(),
                       //_fetchNewStatusTasks(),
                       _fetchInprogressStatusTasks(),
-                      _fetchInprogressStatusTasks(),
+                      Text("hello")
+                      // _fetchInprogressStatusTasks(),
                     ]),
                   ),
                 ],
@@ -350,11 +355,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
 
- var todoTasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
+  var todoTasks = FirebaseFirestore.instance.collection('spark_assignedTasks');
   // .where("to_uid", isNotEqualTo: _auth.currentUser?.email)
   // .where("status", isEqualTo: "");
   Widget _tasksTodo() => StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('spark_assignedTasks').where("to_email", isEqualTo: _auth.currentUser?.email).where("status", isEqualTo: "InProgress").snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('spark_assignedTasks')
+            .where("to_email", isEqualTo: _auth.currentUser?.email)
+            .where("status", isEqualTo: "InProgress")
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -372,146 +381,195 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             );
           } else {
             print('no of todo is ${snapshot.data?.docs.length}');
-            return ListView.builder(
-                itemCount: snapshot.data?.docs.length,
-                itemBuilder: (context, index) {
-                  late QueryDocumentSnapshot<Object?>? taskData =
-                      snapshot.data?.docs[index];
-                  print("qwdqwdw ${taskData?.id}");
-                  // print(
-                  //     "date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                  // print("due date is ${taskData!.get('due data')}");
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TaskViewPage(taskData: taskData?.data(), taskId: taskData?.id),
-                        ));
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            //color: taskItems[index].tagColor,
-                            color: white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade200,
-                                blurRadius: 5.0,
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${taskData!['task_title']}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(height: 20.0),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 4),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(18),
-                                      border: Border.all(color: Colors.white),
-                                      color: primary,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0, vertical: 3.5),
-                                      child: Text(
-                                        "${taskData.get('dept')}",
-                                        style: kSubTitleFont.copyWith(
-                                            color: Colors.white, fontSize: 11),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 5),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(19),
-                                      //border: Border.all(color: Colors.white),
-                                      color: primary,
+
+            return Column(
+              children: [
+                Expanded(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: ListView.builder(
+                          itemCount: snapshot.data?.docs.length,
+                          itemBuilder: (context, index) {
+                            late QueryDocumentSnapshot<Object?>? taskData =
+                                snapshot.data?.docs[index];
+                            print("qwdqwdw ${taskData?.id}");
+                            // print(
+                            //     "date is ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                            // print("due date is ${taskData!.get('due data')}");
+                            // return Text("hello");
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => TaskViewPage(
+                                        taskData: taskData?.data(),
+                                        taskId: taskData?.id),
+                                  ));
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
                                       //color: taskItems[index].tagColor,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0, vertical: 3.5),
-                                      child: Text(
-                                        "Status: ${taskData.get('status')}",
-                                        style: kSubTitleFont.copyWith(
-                                            color: Colors.white, fontSize: 11),
+                                      color: white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade200,
+                                          blurRadius: 5.0,
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(8)),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${taskData!['task_title']}",
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
                                       ),
-                                    ),
+                                      const SizedBox(height: 10.0),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 0),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(18),
+                                                border: Border.all(
+                                                    color: Colors.white),
+                                                color: primary,
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10.0,
+                                                        vertical: 0),
+                                                child: Text(
+                                                  "${taskData.get('dept')}",
+                                                  style: kSubTitleFont.copyWith(
+                                                      color: Colors.white,
+                                                      fontSize: 11),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 5),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 4, vertical: 2),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(19),
+                                                //border: Border.all(color: Colors.white),
+                                                color: primary,
+                                                //color: taskItems[index].tagColor,
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 10.0, vertical: 3.5),
+                                                child: Text(
+                                                                                                            "${ DateFormat('MMMM-dd, hh:mm a').format( DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))}",
+                                                  style: kSubTitleFont.copyWith(
+                                                      color: Colors.white, fontSize: 11),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 12.0),
+                                      Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons
+                                                        .calendar_today_outlined,
+                                                    size: 12,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                          "Assigned by :",
+                                                          style:
+                                                              kHeadingFont.copyWith(
+                                                                  fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
+                                                                   Text(
+                                                          " ${taskData.get('by_name')}",
+                                                          style:
+                                                              kHeadingFont.copyWith(
+                                                                color: Colors.blueAccent,
+                                                                  fontSize: 13)),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                height: 8,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.timer,
+                                                    size: 12,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                          "Assigned by :",
+                                                          style:
+                                                              kHeadingFont.copyWith(
+                                                                  fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
+                                                      Text(
+                                                          "${ DateFormat('MMMM-dd, hh:mm a').format( DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))} - ${taskData.get('due_date')}",
+                                                          style:
+                                                              kHeadingFont.copyWith(
+                                                                  fontSize: 13)),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10.0),
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 12,
-                                        ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                            "Assigned by : ${taskData.get('by_name')}",
-                                            style: kHeadingFont.copyWith(
-                                                fontSize: 11)),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.timer,
-                                          size: 12,
-                                        ),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        Text(
-                                            "${taskData.get('created_on')} - ${taskData.get('due_date')}",
-                                            style: kHeadingFont.copyWith(
-                                                fontSize: 11)),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                              ),
+                            );
+                          }),
                     ),
-                  );
-                });
+                  ),
+                ),
+              ],
+            );
           }
         },
       );
