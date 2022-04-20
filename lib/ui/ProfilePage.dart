@@ -22,42 +22,13 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 30, left: 20, right: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Text(
-                    'Profile',
-                    style: kHeadingFont.copyWith(color: black, fontSize: 22),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Center(
-                    child: CircleAvatar(
-                  backgroundColor: Colors.greenAccent,
-                  radius: 45,
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                  // child: Image.asset('assets/images/profile.png'),
-                )),
-                const SizedBox(
-                  height: 25,
-                ),
-                Center(
-                    child: Text(
-                  "${currentUser?.displayName}",
-                  style: kTitleFont.copyWith(fontSize: 18),
-                )),
-                Center(
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, left: 20, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
                     child: Text(
                       'Profile',
                         style: kHeadingFont.copyWith(
@@ -134,13 +105,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       'Extra',
                       style: kHeadingFont.copyWith(color: black, fontSize: 14),
                     ),
-                    selected: true,
-                    onTap: () {
-                      setState(() {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (_) => const Notifications()));
-                      });
-                    },
                   ),
                   Container(
                     height: 40,
