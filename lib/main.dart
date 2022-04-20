@@ -36,10 +36,12 @@ class _MyAppState extends State<MyApp> {
     // } else {
     //   return LoginPage();
     // }
-    return  MaterialApp(
-      title: 'Todo APP',
+    return MaterialApp(
+      title: 'Task Manager',
       debugShowCheckedModeBanner: false,
-      home: (_auth.currentUser != null) ? const startUpPage() : const Onboarding(),
+      home: (_auth.currentUser != null)
+          ? const startUpPage()
+          : const Onboarding(),
       //home: Authenticate(),
     );
   }
