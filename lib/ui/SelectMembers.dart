@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -12,8 +11,8 @@ import 'package:todo/helpers/theme.dart';
 class SelectMember extends StatefulWidget {
   const SelectMember(
       {Key? key,
-        required this.setPageViewerFun,
-        required this.assignedToDetailsFun})
+      required this.setPageViewerFun,
+      required this.assignedToDetailsFun})
       : super(key: key);
 
   final Function setPageViewerFun;
@@ -44,11 +43,17 @@ class _SelectMemberState extends State<SelectMember> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                      child: Image(
-                        height: 20,
-                        width: 20,
-                        image: AssetImage(
-                          'assets/images/backarrow.png',
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff00B98D),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                       onTap: () {
@@ -82,103 +87,103 @@ class _SelectMemberState extends State<SelectMember> {
                 children: [
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'All';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'All' ? primary : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'All',
-                                  style: kHeadingFont.copyWith(
-                                      color: selected == 'All' ? Colors.white : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'All';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'All' ? primary : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'All',
+                          style: kHeadingFont.copyWith(
+                              color: selected == 'All' ? Colors.white : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'CRM';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'CRM' ? primary : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'CRM',
-                                  style: kHeadingFont.copyWith(
-                                      color: selected == 'CRM' ? Colors.white : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'CRM';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'CRM' ? primary : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'CRM',
+                          style: kHeadingFont.copyWith(
+                              color: selected == 'CRM' ? Colors.white : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'HR';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'HR' ? primary : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'HR',
-                                  style: kHeadingFont.copyWith(
-                                      color: selected == 'HR' ? Colors.white : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'HR';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'HR' ? primary : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'HR',
+                          style: kHeadingFont.copyWith(
+                              color: selected == 'HR' ? Colors.white : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                 ],
               ),
               SizedBox(
@@ -188,109 +193,109 @@ class _SelectMemberState extends State<SelectMember> {
                 children: [
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'Legal';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'Legal' ? primary : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'Legal',
-                                  style: kHeadingFont.copyWith(
-                                      color:
-                                      selected == 'Legal' ? Colors.white : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'Legal';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'Legal' ? primary : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'Legal',
+                          style: kHeadingFont.copyWith(
+                              color:
+                                  selected == 'Legal' ? Colors.white : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'Sales';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'Sales' ? primary : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'Sales',
-                                  style: kHeadingFont.copyWith(
-                                      color:
-                                      selected == 'Sales' ? Colors.white : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'Sales';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'Sales' ? primary : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'Sales',
+                          style: kHeadingFont.copyWith(
+                              color:
+                                  selected == 'Sales' ? Colors.white : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                   Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 8.0,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = 'AdminTeam';
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: selected == 'AdminTeam'
-                                    ? primary
-                                    : Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 10,
-                                  )
-                                ]),
-                            child: Center(
-                                child: Text(
-                                  'Admin Team',
-                                  style: kHeadingFont.copyWith(
-                                      color: selected == 'AdminTeam'
-                                          ? Colors.white
-                                          : primary,
-                                      fontWeight: FontWeight.w500),
-                                )),
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(
+                      right: 8.0,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selected = 'AdminTeam';
+                        });
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                            color: selected == 'AdminTeam'
+                                ? primary
+                                : Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                              )
+                            ]),
+                        child: Center(
+                            child: Text(
+                          'Admin Team',
+                          style: kHeadingFont.copyWith(
+                              color: selected == 'AdminTeam'
+                                  ? Colors.white
+                                  : primary,
+                              fontWeight: FontWeight.w500),
+                        )),
+                      ),
+                    ),
+                  )),
                 ],
               ),
               SizedBox(
@@ -326,7 +331,7 @@ class _SelectMemberState extends State<SelectMember> {
                   physics: ScrollPhysics(),
                   child: StreamBuilder<QuerySnapshot>(
                     stream:
-                    DbQuery.instanace.getEmployeesByDept('users', selected),
+                        DbQuery.instanace.getEmployeesByDept('users', selected),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Text('Error ${snapshot.error}');
@@ -405,9 +410,9 @@ class _SelectMemberState extends State<SelectMember> {
                                             : null;
 
                                         var roles = ds
-                                            .data()
-                                            .toString()
-                                            .contains('roles')
+                                                .data()
+                                                .toString()
+                                                .contains('roles')
                                             ? ds['roles']
                                             : ['no dept'];
                                         return Padding(
@@ -432,18 +437,19 @@ class _SelectMemberState extends State<SelectMember> {
                                                 label: '${name}',
                                                 roles: roles,
                                                 padding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 0.0,
-                                                    vertical: 10),
-                                                value: selectedUser == ds['name'],
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 0.0,
+                                                        vertical: 10),
+                                                value:
+                                                    selectedUser == ds['name'],
                                                 // onChanged: (bool newValue) {
                                                 //   setState(() {
                                                 //     _isSelected = newValue;
                                                 //   });
                                                 // },
                                               )
-                                            // child: homeTeamCardW('started', false, false,  ds['matchDetails']['team_1_pic'],ds['matchDetails']['team_2_pic'], ds['matchDetails']['team-1'],ds['matchDetails']['team-2'],ds['matchDetails']['date'],ds['matchDetails']['dispTitle'] )
-                                          )),
+                                              // child: homeTeamCardW('started', false, false,  ds['matchDetails']['team_1_pic'],ds['matchDetails']['team_2_pic'], ds['matchDetails']['team-1'],ds['matchDetails']['team-2'],ds['matchDetails']['date'],ds['matchDetails']['dispTitle'] )
+                                              )),
                                         );
                                       },
                                     ),
@@ -535,31 +541,34 @@ class LabeledCheckbox extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Container(
-              height: 43,
-              width: 43,
-              child: Image.asset(
-                'assets/images/profile.png',
-                fit: BoxFit.cover,
-              ),
-            ),
+                height: 43,
+                width: 43,
+                child: CircleAvatar(
+                    backgroundColor: Colors.greenAccent,
+                    radius: 30,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 40,
+                    ))),
             Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        style: kHeadingFont.copyWith(color: black),
-                      ),
-                      Text(
-                        roles[0],
-                        style: kSubTitleFont.copyWith(color: black),
-                      ),
-                    ],
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: kHeadingFont.copyWith(color: black),
                   ),
-                )),
+                  Text(
+                    roles[0],
+                    style: kSubTitleFont.copyWith(color: black),
+                  ),
+                ],
+              ),
+            )),
             Checkbox(
               shape: CircleBorder(),
               value: value,

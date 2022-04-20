@@ -30,10 +30,18 @@ class _FilterLabelsState extends State<FilterLabels> {
                 Row(
                   children: [
                     GestureDetector(
-                        child: const Image(
-                          height: 40,
-                          width: 40,
-                          image: AssetImage('assets/images/backarrow.png'),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xff00B98D),
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
                         ),
                         onTap: () {
                           Navigator.of(context).pop();

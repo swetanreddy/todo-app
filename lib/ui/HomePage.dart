@@ -57,12 +57,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
-                                child: const Image(
-                                    height: 35,
-                                    width: 35,
-                                    image: AssetImage(
-                                      'assets/images/menu.png',
-                                    )),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff00B98D),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Icon(
+                                      Icons.menu,
+                                      color: Colors.white,
+                                      size: 20,
+                                      // height: 35,
+                                      // width: 35,
+                                      // image: AssetImage(
+                                      //   'assets/images/menu.png',
+                                      // )
+                                    ),
+                                  ),
+                                ),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => FilterLabels(),
@@ -472,21 +484,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 4, horizontal: 5),
                                             child: Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 4, vertical: 2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                      vertical: 2),
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(19),
+                                                borderRadius:
+                                                    BorderRadius.circular(19),
                                                 //border: Border.all(color: Colors.white),
                                                 color: primary,
                                                 //color: taskItems[index].tagColor,
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 10.0, vertical: 3.5),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10.0,
+                                                        vertical: 3.5),
                                                 child: Text(
-                                                                                                            "${ DateFormat('MMMM-dd, hh:mm a').format( DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))}",
+                                                  "${DateFormat('MMMM-dd, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))}",
                                                   style: kSubTitleFont.copyWith(
-                                                      color: Colors.white, fontSize: 11),
+                                                      color: Colors.white,
+                                                      fontSize: 11),
                                                 ),
                                               ),
                                             ),
@@ -514,17 +532,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   ),
                                                   Row(
                                                     children: [
+                                                      Text("Assigned by :",
+                                                          style: kHeadingFont
+                                                              .copyWith(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w900,
+                                                                  letterSpacing:
+                                                                      0.5)),
                                                       Text(
-                                                          "Assigned by :",
-                                                          style:
-                                                              kHeadingFont.copyWith(
-                                                                  fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
-                                                                   Text(
                                                           " ${taskData.get('by_name')}",
-                                                          style:
-                                                              kHeadingFont.copyWith(
-                                                                color: Colors.blueAccent,
-                                                                  fontSize: 13)),
+                                                          style: kHeadingFont
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .blueAccent,
+                                                                  fontSize:
+                                                                      13)),
                                                     ],
                                                   ),
                                                 ],
@@ -543,16 +567,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   ),
                                                   Row(
                                                     children: [
+                                                      Text("Assigned by :",
+                                                          style: kHeadingFont
+                                                              .copyWith(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w900,
+                                                                  letterSpacing:
+                                                                      0.5)),
                                                       Text(
-                                                          "Assigned by :",
-                                                          style:
-                                                              kHeadingFont.copyWith(
-                                                                  fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
-                                                      Text(
-                                                          "${ DateFormat('MMMM-dd, hh:mm a').format( DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))} - ${taskData.get('due_date')}",
-                                                          style:
-                                                              kHeadingFont.copyWith(
-                                                                  fontSize: 13)),
+                                                          "${DateFormat('MMMM-dd, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(taskData.get('created_on') * 1000))} - ${taskData.get('due_date')}",
+                                                          style: kHeadingFont
+                                                              .copyWith(
+                                                                  fontSize:
+                                                                      13)),
                                                     ],
                                                   ),
                                                 ],

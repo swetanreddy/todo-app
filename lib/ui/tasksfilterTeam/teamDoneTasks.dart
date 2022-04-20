@@ -47,11 +47,17 @@ class _DoneTasksTeamState extends State<DoneTasksTeam> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                        child: const Image(
-                          height: 35,
-                          width: 35,
-                          image: AssetImage(
-                            'assets/images/backarrow.png',
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xff00B98D),
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
                         ),
                         onTap: () {

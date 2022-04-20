@@ -191,11 +191,18 @@ class _CreateTaskState extends State<CreateTask> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
-                                  child: const Image(
-                                    height: 30,
-                                    width: 30,
-                                    image: const AssetImage(
-                                      'assets/images/backarrow.png',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff00B98D),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: const Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
                                   ),
                                   onTap: () {
@@ -203,8 +210,9 @@ class _CreateTaskState extends State<CreateTask> {
                                   }),
                               Text('Create Task',
                                   style: kHeadingFont.copyWith(
-                                      color: black,
-                                      fontSize: 17,)),
+                                    color: black,
+                                    fontSize: 17,
+                                  )),
                               IconButton(
                                 icon: const Icon(
                                   Icons.edit,
@@ -272,7 +280,8 @@ class _CreateTaskState extends State<CreateTask> {
                                               right: 15),
                                           hintText: "Task Title",
                                           hintStyle: TextStyle(
-                                              color: Colors.grey.shade300,fontSize: 15)),
+                                              color: Colors.grey.shade300,
+                                              fontSize: 15)),
                                     ),
                                   )
                                 ],
@@ -663,8 +672,8 @@ class _CreateTaskState extends State<CreateTask> {
                                 fillColor: Colors.grey.shade100,
                                 filled: true,
                                 hintText: 'Type Here',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade400,fontSize: 15)),
+                                hintStyle: TextStyle(
+                                    color: Colors.grey.shade400, fontSize: 15)),
                           ),
                         ),
                         const SizedBox(height: 20),

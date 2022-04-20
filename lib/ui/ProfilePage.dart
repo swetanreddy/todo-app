@@ -29,27 +29,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Text(
-                      'Profile',
+                    child: Text('Profile',
                         style: kHeadingFont.copyWith(
                           color: black,
-                          fontSize: 18,)),
+                          fontSize: 18,
+                        )),
                   ),
                   const SizedBox(
                     height: 25,
                   ),
                   Center(
                       child: CircleAvatar(
-                    backgroundColor: Colors.greenAccent,
-                    radius: 65,
-                    child: Image.asset('assets/images/profile.png'),
-                  )),
+                          backgroundColor: Colors.greenAccent,
+                          radius: 30,
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 40,
+                          ))),
                   const SizedBox(
                     height: 25,
                   ),
                   Center(
                       child: Text(
-                    "Ahnaf Irfan",
+                    "${currentUser?.displayName.toString()}",
                     style: kTitleFont.copyWith(fontSize: 18),
                   )),
                   Center(
@@ -78,7 +81,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       //leading: Icon(Icons.add),
                       title: Text(
                         'Your info',
-                        style: kHeadingFont.copyWith(color: black, fontSize: 12),
+                        style:
+                            kHeadingFont.copyWith(color: black, fontSize: 12),
                       ),
                       trailing: const Icon(
                         Icons.arrow_forward_ios_sharp,
@@ -124,7 +128,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         setState(() {
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => const Notifications()));
+                              MaterialPageRoute(
+                                  builder: (_) => const Notifications()));
                         });
                       },
                     ),
