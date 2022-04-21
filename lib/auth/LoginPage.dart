@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text('REDEFINE ERP',
+                          Text('Redefine Taskman',
                               style: TextStyle(
                                 color: greyHeading,
                                 fontWeight: FontWeight.w500,
