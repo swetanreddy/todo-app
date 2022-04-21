@@ -82,9 +82,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 },
                               ),
                               Text(
-                                'Task Manager',
+                                'Redefine Taskman',
                                 style: kHeadingFont.copyWith(
-                                    color: black, fontSize: 20),
+                                    color: black, fontSize: 18),
                               ),
                               NamedIcon(
                                 text: '',
