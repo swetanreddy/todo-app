@@ -3,6 +3,7 @@ import 'package:todo/ui/CreateTask.dart';
 import 'package:todo/ui/HomePage.dart';
 import 'package:todo/ui/ProfilePage.dart';
 import 'package:todo/helpers/theme.dart';
+import 'package:todo/ui/report.dart';
 
 import 'tasksfilterPersonal/personalDoneTasks.dart';
 
@@ -17,12 +18,11 @@ class _startUpPageState extends State<startUpPage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static  List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     doneTasksPersonal(taskFilter: 'personalDone'),
+    Report(),
     ProfilePage(),
-     ProfilePage(),
-  
   ];
 
   void _onItemTapped(int index) {
@@ -110,7 +110,7 @@ class _startUpPageState extends State<startUpPage> {
                     minWidth: 40,
                     onPressed: () {
                       setState(() {
-                     // if user taps on this dashboard tab will be active
+                        // if user taps on this dashboard tab will be active
                         _selectedIndex = 0;
                       });
                     },
@@ -133,8 +133,7 @@ class _startUpPageState extends State<startUpPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10) ,
+                  padding: const EdgeInsets.only(left: 10),
                   child: MaterialButton(
                     minWidth: 40,
                     onPressed: () {
@@ -174,7 +173,7 @@ class _startUpPageState extends State<startUpPage> {
                   minWidth: 40,
                   onPressed: () {
                     setState(() {
-           // if user taps on this dashboard tab will be active
+                      // if user taps on this dashboard tab will be active
                       _selectedIndex = 2;
                     });
                   },
@@ -197,8 +196,8 @@ class _startUpPageState extends State<startUpPage> {
                 MaterialButton(
                   minWidth: 40,
                   onPressed: () {
-                     setState(() {
-           // if user taps on this dashboard tab will be active
+                    setState(() {
+                      // if user taps on this dashboard tab will be active
                       _selectedIndex = 3;
                     });
                   },
