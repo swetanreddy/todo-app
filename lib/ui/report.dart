@@ -55,16 +55,16 @@ class _ReportState extends State<Report> {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        if (time != chosendays) {
-          if (doc['status'] == "Done") {
-            donecount = donecount + 1;
-          } else if (doc['status'] == "InProgress") {
-            notdone = notdone + 1;
-          }
-        } else if (time == chosendays) {
-          // var xtime = time *
-          // if()
+        // if (time != chosendays) {
+        if (doc['status'] == "Done") {
+          donecount = donecount + 1;
+        } else if (doc['status'] == "InProgress") {
+          notdone = notdone + 1;
         }
+
+        // var xtime = time *
+        // if()
+
         setState(() {});
       });
       // setState(() {});
